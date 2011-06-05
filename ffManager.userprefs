@@ -1,0 +1,13 @@
+﻿<Properties>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" ctype="Workspace" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="ffManager/MainWindow.cs" ctype="Workbench">
+    <Files>
+      <File FileName="ffManager/Main.cs" Line="1" Column="1" />
+      <File FileName="ffManager/MainWindow.cs" Line="1" Column="1" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches ctype="PinnedWatchStore" />
+</Properties>

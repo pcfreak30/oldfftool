@@ -21,11 +21,11 @@ public partial class MainWindow
 
 	private global::Gtk.VBox vbox2;
 
-	private global::Gtk.HBox hbox1;
+	private global::Gtk.HBox ff_profile_box;
 
 	private global::Gtk.Label label3;
 
-	private global::Gtk.FileChooserButton filechooserbutton2;
+	private global::Gtk.FileChooserButton ffprofile_chooser;
 
 	private global::Gtk.HBox hbox2;
 
@@ -50,10 +50,10 @@ public partial class MainWindow
 		w1.Add (this.FileAction, null);
 		this.OpenAction = new global::Gtk.Action ("OpenAction", global::Mono.Unix.Catalog.GetString ("Open"), null, null);
 		this.OpenAction.ShortLabel = global::Mono.Unix.Catalog.GetString ("Open");
-		w1.Add (this.OpenAction, null);
+		w1.Add (this.OpenAction, "<Control>o");
 		this.ExitAction = new global::Gtk.Action ("ExitAction", global::Mono.Unix.Catalog.GetString ("Exit"), null, null);
 		this.ExitAction.ShortLabel = global::Mono.Unix.Catalog.GetString ("Exit");
-		w1.Add (this.ExitAction, null);
+		w1.Add (this.ExitAction, "<Control>q");
 		this.HelpAction = new global::Gtk.Action ("HelpAction", global::Mono.Unix.Catalog.GetString ("Help"), null, null);
 		this.HelpAction.ShortLabel = global::Mono.Unix.Catalog.GetString ("Help");
 		w1.Add (this.HelpAction, null);
@@ -85,27 +85,27 @@ public partial class MainWindow
 		this.vbox2.Name = "vbox2";
 		this.vbox2.Spacing = 6;
 		// Container child vbox2.Gtk.Box+BoxChild
-		this.hbox1 = new global::Gtk.HBox ();
-		this.hbox1.Sensitive = false;
-		this.hbox1.Name = "hbox1";
-		this.hbox1.Spacing = 6;
-		// Container child hbox1.Gtk.Box+BoxChild
+		this.ff_profile_box = new global::Gtk.HBox ();
+		this.ff_profile_box.Sensitive = false;
+		this.ff_profile_box.Name = "ff_profile_box";
+		this.ff_profile_box.Spacing = 6;
+		// Container child ff_profile_box.Gtk.Box+BoxChild
 		this.label3 = new global::Gtk.Label ();
 		this.label3.Name = "label3";
 		this.label3.LabelProp = global::Mono.Unix.Catalog.GetString ("FastFile Profile");
-		this.hbox1.Add (this.label3);
-		global::Gtk.Box.BoxChild w3 = ((global::Gtk.Box.BoxChild)(this.hbox1[this.label3]));
+		this.ff_profile_box.Add (this.label3);
+		global::Gtk.Box.BoxChild w3 = ((global::Gtk.Box.BoxChild)(this.ff_profile_box[this.label3]));
 		w3.Position = 0;
 		w3.Expand = false;
 		w3.Fill = false;
-		// Container child hbox1.Gtk.Box+BoxChild
-		this.filechooserbutton2 = new global::Gtk.FileChooserButton (global::Mono.Unix.Catalog.GetString ("Select A File"), ((global::Gtk.FileChooserAction)(0)));
-		this.filechooserbutton2.Name = "filechooserbutton2";
-		this.hbox1.Add (this.filechooserbutton2);
-		global::Gtk.Box.BoxChild w4 = ((global::Gtk.Box.BoxChild)(this.hbox1[this.filechooserbutton2]));
+		// Container child ff_profile_box.Gtk.Box+BoxChild
+		this.ffprofile_chooser = new global::Gtk.FileChooserButton (global::Mono.Unix.Catalog.GetString ("Select A File"), ((global::Gtk.FileChooserAction)(0)));
+		this.ffprofile_chooser.Name = "ffprofile_chooser";
+		this.ff_profile_box.Add (this.ffprofile_chooser);
+		global::Gtk.Box.BoxChild w4 = ((global::Gtk.Box.BoxChild)(this.ff_profile_box[this.ffprofile_chooser]));
 		w4.Position = 1;
-		this.vbox2.Add (this.hbox1);
-		global::Gtk.Box.BoxChild w5 = ((global::Gtk.Box.BoxChild)(this.vbox2[this.hbox1]));
+		this.vbox2.Add (this.ff_profile_box);
+		global::Gtk.Box.BoxChild w5 = ((global::Gtk.Box.BoxChild)(this.vbox2[this.ff_profile_box]));
 		w5.Position = 0;
 		w5.Expand = false;
 		w5.Fill = false;
@@ -172,5 +172,7 @@ public partial class MainWindow
 		this.DefaultHeight = 370;
 		this.Show ();
 		this.DeleteEvent += new global::Gtk.DeleteEventHandler (this.OnDeleteEvent);
+		this.OpenAction.Activated += new global::System.EventHandler (this.ff_open_handler);
+		this.btn_decomp.Clicked += new global::System.EventHandler (this.btn_decomp_pressed);
 	}
 }

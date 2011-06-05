@@ -17,11 +17,14 @@
       </action>
       <action id="OpenAction">
         <property name="Type">Action</property>
+        <property name="Accelerator">&lt;Control&gt;o</property>
         <property name="Label" translatable="yes">Open</property>
         <property name="ShortLabel" translatable="yes">Open</property>
+        <signal name="Activated" handler="ff_open_handler" />
       </action>
       <action id="ExitAction">
         <property name="Type">Action</property>
+        <property name="Accelerator">&lt;Control&gt;q</property>
         <property name="Label" translatable="yes">Exit</property>
         <property name="ShortLabel" translatable="yes">Exit</property>
       </action>
@@ -67,7 +70,7 @@
                 <property name="MemberName" />
                 <property name="Spacing">6</property>
                 <child>
-                  <widget class="Gtk.HBox" id="hbox1">
+                  <widget class="Gtk.HBox" id="ff_profile_box">
                     <property name="MemberName" />
                     <property name="Sensitive">False</property>
                     <property name="Spacing">6</property>
@@ -84,7 +87,7 @@
                       </packing>
                     </child>
                     <child>
-                      <widget class="Gtk.FileChooserButton" id="filechooserbutton2">
+                      <widget class="Gtk.FileChooserButton" id="ffprofile_chooser">
                         <property name="MemberName" />
                       </widget>
                       <packing>
@@ -113,6 +116,7 @@
                         <property name="Type">TextOnly</property>
                         <property name="Label" translatable="yes">Decompress</property>
                         <property name="UseUnderline">True</property>
+                        <signal name="Clicked" handler="btn_decomp_pressed" />
                       </widget>
                       <packing>
                         <property name="Position">0</property>
