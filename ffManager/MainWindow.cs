@@ -8,6 +8,9 @@ public partial class MainWindow : Gtk.Window
 {
 	private string platform;
 	private string opened_ff_file;
+	public string game;
+	public string console;
+	private string fslash;
 	private ffProfile ffprofile = new ffProfile();
 	public MainWindow () : base(Gtk.WindowType.Toplevel)
 	{
@@ -21,9 +24,11 @@ public partial class MainWindow : Gtk.Window
         case PlatformID.Win32Windows:
         case PlatformID.WinCE:
              this.platform = "win32";
+			this.fslash = @"\";
             break;
         case PlatformID.Unix:
             this.platform = "unix";
+			this.fslash = @"/";
             break;
         }
 		FileFilter filter = new FileFilter();
@@ -60,16 +65,11 @@ public partial class MainWindow : Gtk.Window
 	private void ff_open_callback(string fname)
 	{
 		FileInfo ffinfo = new FileInfo(fname);
-		string fslash = "";
-		if(this.platform == "win32")
-			fslash = @"\";
-		else if(this.platform == "unix")
-			fslash = "/";
 		
 		string ffdir = ffinfo.Directory.FullName;
-		string workdir = ffdir + fslash + ffinfo.Name.Replace(ffinfo.Extension,"") + "_work";
-		string dumpdir= ffdir + fslash + ffinfo.Name.Replace(ffinfo.Extension,"") + "_work" + fslash + "dump";
-		string filesdir= ffdir + fslash + ffinfo.Name.Replace(ffinfo.Extension,"") + "_work" + fslash + "files";
+		string workdir = ffdir + this.fslash + ffinfo.Name.Replace(ffinfo.Extension,"") + "_work";
+		string dumpdir= ffdir + this.fslash + ffinfo.Name.Replace(ffinfo.Extension,"") + "_work" + this.fslash + "dump";
+		string filesdir= ffdir + this.fslash + ffinfo.Name.Replace(ffinfo.Extension,"") + "_work" + this.fslash + "files";
 		
 		if(Directory.Exists(workdir))
 		{
@@ -121,6 +121,7 @@ public partial class MainWindow : Gtk.Window
 			this.ffprofile.setProfile(this.ffprofile_chooser.Filename);
 		else
 			this.ffprofile.setProfile("");
+		
 	}
 	protected virtual void btn_decomp_pressed (object sender, System.EventArgs e)
 	{
@@ -138,20 +139,12 @@ public partial class MainWindow : Gtk.Window
 		Process p = new Process();
 		FileInfo ffinfo = new FileInfo(this.opened_ff_file);
 		string ffdir = ffinfo.Directory.FullName;
-		string fslash = "";
-		if(this.platform == "win32")
-			fslash = @"\";
-		else if(this.platform == "unix")
-			fslash = "/";
-		string dumpdir = ffdir + fslash + ffinfo.Name.Replace(ffinfo.Extension,"") + "_work" + fslash + "dump";
-		string console = this.ffprofile.getConsole();
-
-		string game = this.ffprofile.getGame();
+		string dumpdir = ffdir + this.fslash + ffinfo.Name.Replace(ffinfo.Extension,"") + "_work" + this.fslash + "dump";
 		string comp = "";
 		string compmode = "";
-		if(console == "ps3")
+		if(this.ffprofile.getConsole() == "ps3")
 		{
-			switch(game)
+			switch(this.ffprofile.getGame())
 			{
 				case "cod4":
 				case "waw":
@@ -164,10 +157,10 @@ public partial class MainWindow : Gtk.Window
 				break;
 			}
 		}
-		else if(console == "xbox")
+		else if(this.ffprofile.getConsole() == "xbox")
 		{
 			
-			switch(game)
+			switch(this.ffprofile.getGame())
 			{
 				
 				case "waw":
@@ -210,7 +203,7 @@ public partial class MainWindow : Gtk.Window
 	{
 		if(this.ffprofile_chooser.Filename == "" || this.ffprofile_chooser.Filename == null)
 			return;
-		this.ffprofile.setProfile(this.ffprofile_chooser.Filename);
+		this.ffprofile.setProfile( this.ffprofile_chooser.Filename);
 		if(this.ffprofile.isValid() == false)
 		{
 			this.msgbox(this,
@@ -225,16 +218,11 @@ public partial class MainWindow : Gtk.Window
 	}
 		private void processFiles_packed()
 		{
-			string pack_extract = this.ffprofile.getPackedDump();
+			string pack_extract = this.searchForFile(this.ffprofile.getPackedDump());
 			Process p = new Process();
 			FileInfo ffinfo = new FileInfo(this.opened_ff_file);
 			string ffdir = ffinfo.Directory.FullName;
-			string fslash = "";
-			if(this.platform == "win32")
-				fslash = @"\";
-			else if(this.platform == "unix")
-				fslash = "/";
-			string dumpdir = ffdir + fslash + ffinfo.Name.Replace(ffinfo.Extension,"") + "_work" + fslash + "dump/";
+			string dumpdir = ffdir + this.fslash + ffinfo.Name.Replace(ffinfo.Extension,"") + "_work" + this.fslash + "dump" + this.fslash;
 			if(!File.Exists(dumpdir + pack_extract))
 			{
 				this.msgbox(this, DialogFlags.Modal,MessageType.Error,ButtonsType.Close,"File: " + dumpdir + pack_extract + " does not exist!");
@@ -246,14 +234,14 @@ public partial class MainWindow : Gtk.Window
 			ProcessStartInfo info = p.StartInfo;
 			info.FileName="offzip";
 			info.Arguments="-a " + @"""" +  dumpdir  + pack_extract + @"""" + " " + @"""" + dumpdir + @"""" + " 0";
-			info.WindowStyle = ProcessWindowStyle.Normal;
+			info.WindowStyle = ProcessWindowStyle.Hidden;
 		}
 		else if(this.platform == "unix")
 		{
 			ProcessStartInfo info = p.StartInfo;
 			info.FileName="wine";
 			info.Arguments="offzip -a " + @"""" + dumpdir +  pack_extract + @"""" + " " + @"""" + dumpdir + @"""" + " 0";
-			info.WindowStyle = ProcessWindowStyle.Normal;
+			info.WindowStyle = ProcessWindowStyle.Hidden;
 		}
 		p.Start();
 		p.WaitForExit();
@@ -263,13 +251,8 @@ public partial class MainWindow : Gtk.Window
 		{
 			FileInfo ffinfo = new FileInfo(this.opened_ff_file);
 			string ffdir = ffinfo.Directory.FullName;
-			string fslash = "";
-			if(this.platform == "win32")
-				fslash = @"\";
-			else if(this.platform == "unix")
-				fslash = "/";
-			string filesdir = ffdir + fslash + ffinfo.Name.Replace(ffinfo.Extension,"") + "_work" + fslash + "files" + fslash;
-			string dumpdir = ffdir + fslash + ffinfo.Name.Replace(ffinfo.Extension,"") + "_work" + fslash + "dump" + fslash;
+			string filesdir = ffdir + fslash + ffinfo.Name.Replace(ffinfo.Extension,"") + "_work" + this.fslash + "files" + fslash;
+			string dumpdir = ffdir + fslash + ffinfo.Name.Replace(ffinfo.Extension,"") + "_work" + this.fslash + "dump" + this.fslash;
 			
 			XmlNodeList data = this.ffprofile.getFileList();
 			foreach(XmlNode file in data)
@@ -279,7 +262,7 @@ public partial class MainWindow : Gtk.Window
 			
 				foreach(XmlNode part in file.ChildNodes)
 				{
-					string part_name = part.Attributes["name"].Value;
+					string part_name = this.searchForFile(part.Attributes["name"].Value);
 					string part_start= part.Attributes["startpos"].Value;
 					string part_end= part.Attributes["endpos"].Value;
 					string file_full_name = filesdir + file_name;
@@ -293,23 +276,15 @@ public partial class MainWindow : Gtk.Window
 			this.msgbox(this, DialogFlags.Modal,MessageType.Info,ButtonsType.Ok,"FastFile " + this.opened_ff_file + " Decompressed to:\n" + filesdir);
 			this.btn_comp.Sensitive = true;
 		}
-	private void compressfile_packed(string file)
+	private void compressfile_part2(string file)
 		{
 			Process p = new Process();
 			FileInfo ffinfo = new FileInfo(this.opened_ff_file);
 			string ffdir = ffinfo.Directory.FullName;
-			string fslash = "";
-			if(this.platform == "win32")
-				fslash = @"\";
-			else if(this.platform == "unix")
-				fslash = "/";
-		string console = this.ffprofile.getConsole();
-
-		string game = this.ffprofile.getGame();
 		string comp = "";
-		if(console == "ps3")
+		if(this.fslash == "ps3")
 		{
-			switch(game)
+			switch(this.ffprofile.getGame())
 			{
 				case "cod4":
 				case "waw":
@@ -320,10 +295,10 @@ public partial class MainWindow : Gtk.Window
 				break;
 			}
 		}
-		else if(console == "xbox")
+		else if(this.ffprofile.getConsole() == "xbox")
 		{
 			
-			switch(game)
+			switch(this.ffprofile.getGame())
 			{
 				
 				case "waw":
@@ -335,14 +310,12 @@ public partial class MainWindow : Gtk.Window
 				break;
 			}
 		}
-			string dumpdir = ffdir + fslash + ffinfo.Name.Replace(ffinfo.Extension,"") + "_work" + fslash + "dump/";
-			string[] file_parts= file.Split('.');
-			
-			string hex_offset = dumpdir;
-			for(int i=0; i < file_parts.Length -1;i++) hex_offset += file_parts[i];
+			string dumpdir = ffdir + this.fslash + ffinfo.Name.Replace(ffinfo.Extension,"") + "_work" + this.fslash + "dump/";
+			string hex_offset = dumpdir + this.searchForFile(file);
+			string packdump = this.searchForFile(this.ffprofile.getPackedDump());
 			if(!File.Exists(dumpdir + file))
 			{
-				this.msgbox(this, DialogFlags.Modal,MessageType.Error,ButtonsType.Close,"File: " + dumpdir + file + " does not exist!");
+				this.msgbox(this, DialogFlags.Modal,MessageType.Error,ButtonsType.Close,"File: " + packdump + file + " does not exist!");
 				this.btn_decomp.Sensitive = true;
 				return;
 			}
@@ -350,31 +323,80 @@ public partial class MainWindow : Gtk.Window
 		{
 			ProcessStartInfo info = p.StartInfo;
 			info.FileName="packzip";
-			info.Arguments="-o 0x" + hex_offset + " " + comp +  @"""" +  dumpdir + file + @"""" + " " + @"""" + this.opened_ff_file + @"""";
+			info.Arguments="-o 0x" + hex_offset + " " + comp +  @"""" +  dumpdir + file + @"""" + " " + @"""" +  packdump + file + @"""";
 			info.WindowStyle = ProcessWindowStyle.Normal;
 		}
 		else if(this.platform == "unix")
 		{
 			ProcessStartInfo info = p.StartInfo;
 			info.FileName="wine";
-			info.Arguments="packzip -o 0x" + hex_offset + " " + comp +  @"""" + dumpdir + file + @"""" + " " + @"""" + this.opened_ff_file + @"""";
+			info.Arguments="packzip -o 0x" + hex_offset + " " + comp +  @"""" + dumpdir + file + @"""" + " " + @"""" + dumpdir + file + @"""";
 			info.WindowStyle = ProcessWindowStyle.Normal;
 		}
 		p.Start();
 		p.WaitForExit();
 		this.processFiles_parts();
 		}
+		
+		private void compress_ff()
+		{
+			Process p = new Process();
+			FileInfo ffinfo = new FileInfo(this.opened_ff_file);
+			string ffdir = ffinfo.Directory.FullName;
+		string comp = "";
+		if(this.ffprofile.getConsole() == "ps3")
+		{
+			switch(this.ffprofile.getGame())
+			{
+				case "cod4":
+				case "waw":
+					return;
+				break;
+			}
+		}
+		else if(this.ffprofile.getConsole() == "xbox")
+		{
+			
+			switch(this.ffprofile.getGame())
+			{
+				
+				case "waw":
+					return;
+				break;
+			}
+		}
+			string dumpdir = ffdir + this.fslash + ffinfo.Name.Replace(ffinfo.Extension,"") + "_work" + this.fslash + "dump/";
+			string hex_offset = dumpdir + this.ffprofile.getPackedDump();
+			string packdump = this.searchForFile(this.ffprofile.getPackedDump());
+			if(!File.Exists(dumpdir + packdump))
+			{
+				this.msgbox(this, DialogFlags.Modal,MessageType.Error,ButtonsType.Close,"File: " + dumpdir + packdump + " does not exist!");
+				this.btn_decomp.Sensitive = true;
+				return;
+			}
+		if(this.platform == "win32")
+		{
+			ProcessStartInfo info = p.StartInfo;
+			info.FileName="packzip";
+			info.Arguments="-o 0x" + hex_offset + " " + comp +  @"""" +  dumpdir + packdump + @"""" + " " + @"""" +  this.opened_ff_file + @"""";
+			info.WindowStyle = ProcessWindowStyle.Normal;
+		}
+		else if(this.platform == "unix")
+		{
+			ProcessStartInfo info = p.StartInfo;
+			info.FileName="wine";
+			info.Arguments="packzip -o 0x" + hex_offset + " " + comp +  @"""" + dumpdir + packdump + @"""" + " " + @"""" + this.opened_ff_file + @"""";
+			info.WindowStyle = ProcessWindowStyle.Normal;
+		}
+		p.Start();
+		p.WaitForExit();
+		}
 		private void compressfiles_parts()
 		{
 			FileInfo ffinfo = new FileInfo(this.opened_ff_file);
 			string ffdir = ffinfo.Directory.FullName;
-			string fslash = "";
-			if(this.platform == "win32")
-				fslash = @"\";
-			else if(this.platform == "unix")
-				fslash = "/";
-			string filesdir = ffdir + fslash + ffinfo.Name.Replace(ffinfo.Extension,"") + "_work" + fslash + "files" + fslash;
-			string dumpdir = ffdir + fslash + ffinfo.Name.Replace(ffinfo.Extension,"") + "_work" + fslash + "dump" + fslash;
+			string filesdir = ffdir + this.fslash + ffinfo.Name.Replace(ffinfo.Extension,"") + "_work" + this.fslash + "files" + this.fslash;
+			string dumpdir = ffdir + this.fslash + ffinfo.Name.Replace(ffinfo.Extension,"") + "_work" + this.fslash + "dump" + this.fslash;
 			
 			XmlNodeList data = this.ffprofile.getFileList();
 			foreach(XmlNode file in data)
@@ -389,9 +411,10 @@ public partial class MainWindow : Gtk.Window
 					string part_end= part.Attributes["endpos"].Value;
 					string file_full_name = filesdir + file_name;
 					string part_full_name = dumpdir + part_name;
+				Console.WriteLine(part_full_name);
 					if(File.Exists(part_full_name))
 						this.write_part(part_full_name, file_full_name,part_start, part_end);
-					else this.msgbox(this, DialogFlags.Modal,MessageType.Error,ButtonsType.Close,"File: " + part_full_name + " does not exist!");
+						else this.msgbox(this, DialogFlags.Modal,MessageType.Error,ButtonsType.Close,"File: " + part_full_name + " does not exist!");
 				
 				}
 			}
@@ -404,19 +427,15 @@ public partial class MainWindow : Gtk.Window
 	{
 		FileInfo ffinfo = new FileInfo(this.opened_ff_file);
 			string ffdir = ffinfo.Directory.FullName;
-			string fslash = "";
-			if(this.platform == "win32")
-				fslash = @"\";
-			else if(this.platform == "unix")
-				fslash = "/";
 			try
 			{
 				File.Copy(this.opened_ff_file,this.opened_ff_file + ".bak",true);
 			}
 			catch(IOException execp)
 			{}
-			string filesdir = ffdir + fslash + ffinfo.Name.Replace(ffinfo.Extension,"") + "_work" + fslash + "files" + fslash;
-			string dumpdir = ffdir + fslash + ffinfo.Name.Replace(ffinfo.Extension,"") + "_work" + fslash + "dump" + fslash;
+			string filesdir = ffdir + this.fslash + ffinfo.Name.Replace(ffinfo.Extension,"") + "_work" + this.fslash + "files" + this.fslash;
+			string dumpdir = ffdir + this.fslash + ffinfo.Name.Replace(ffinfo.Extension,"") + "_work" + this.fslash + "dump" + this.fslash;
+			Console.WriteLine(dumpdir);
 			XmlNodeList data = this.ffprofile.getFileList();
 			foreach(XmlNode file in data)
 			{
@@ -424,7 +443,6 @@ public partial class MainWindow : Gtk.Window
 				long tsize = Convert.ToInt64(file.Attributes["size"].Value);
 				long pos=0;
 				long len=0;
-				this.fillPadding(filesdir + file_name,tsize);
 				long overflow_size = this.getOverflow(filesdir + file_name,tsize);
 				if(overflow_size > 0)
 				{
@@ -434,25 +452,30 @@ public partial class MainWindow : Gtk.Window
 				}
 				else
 				{
+					this.fillPadding(filesdir + file_name,tsize);
+				}
 					foreach(XmlNode part in file.ChildNodes)
 					{
-						string part_name = part.Attributes["name"].Value;
+				
+						string part_name = this.searchForFile(part.Attributes["name"].Value);
+				Console.WriteLine(part_name);
 						string part_start= part.Attributes["startpos"].Value;
 						string part_end= part.Attributes["endpos"].Value;
 						string file_full_name = filesdir + file_name;
 						string part_full_name = dumpdir + part_name;
 						len = Convert.ToInt64(part_end) - pos;
 						if(File.Exists(part_full_name))
-							this.write_part_back(part_full_name, file_full_name,pos,len, part_start);
+							this.write_part_back(file_full_name, part_full_name,pos,len, part_start);
 						else this.msgbox(this, DialogFlags.Modal,MessageType.Error,ButtonsType.Close,"File: " + part_full_name + " does not exist!");
 						pos += Convert.ToInt64(part_start);
-				}
+						this.compressfile_part2(part.Attributes["name"].Value);
 			}
-		}
 			
-			this.msgbox(this, DialogFlags.Modal,MessageType.Info,ButtonsType.Ok,"FastFile " + this.opened_ff_file + " Re-Compressed to:\n" + filesdir);
-			this.btn_comp.Sensitive = true;
 		}
+		this.compress_ff();
+		this.msgbox(this, DialogFlags.Modal,MessageType.Info,ButtonsType.Ok,"FastFile " + this.opened_ff_file + " Re-Compressed to:\n" + filesdir);
+		this.btn_comp.Sensitive = true;
+	}
 		private void write_part(string infile, string outfile, string start, string end)
 		{
 			BinaryReader input = new BinaryReader(File.Open(infile,FileMode.Open,FileAccess.Read));
@@ -461,7 +484,7 @@ public partial class MainWindow : Gtk.Window
 			long posb =  Convert.ToInt64(end);
 			input.BaseStream.Seek(posa,SeekOrigin.Begin);
 		try{
-			while(input.BaseStream.Position <= posb)
+			while(input.BaseStream.Position < posb)
 			{
 				byte data = input.ReadByte();
 				if(data != 0x00)
@@ -470,26 +493,24 @@ public partial class MainWindow : Gtk.Window
 		}
 		catch(EndOfStreamException EOFS)
 		{
-			
+			Console.WriteLine(EOFS.Message);
 		}
+			output.Flush();
 			output.Close();
 			input.Close();
 		
 	}
 	private void write_part_back(string infile, string outfile, long src_start, long src_end,string dst_start)
 	{
-			BinaryReader input = new BinaryReader(File.Open(infile,FileMode.Open,FileAccess.Read));
-			BinaryWriter output = new BinaryWriter(File.Open(outfile,FileMode.Open,FileAccess.Write));
+			BinaryReader input = new BinaryReader(File.Open(infile,FileMode.Open,FileAccess.Read,FileShare.ReadWrite));
+			BinaryWriter output = new BinaryWriter(File.Open(outfile,FileMode.Open,FileAccess.Write,FileShare.ReadWrite));
 			long ldst_start =  Convert.ToInt64(dst_start);
 			output.BaseStream.Seek(ldst_start,SeekOrigin.Begin);
 			input.BaseStream.Seek(src_start, SeekOrigin.Begin);
-			Console.WriteLine("src_start =" + src_start.ToString() + " ldst_start =" + ldst_start.ToString() + " " +  src_end.ToString());
-			Console.WriteLine("Writing Data :");
 		try{
-			while(input.BaseStream.Position <=  src_end)
+			while(input.BaseStream.Position <  src_end)
 			{
 				byte data = input.ReadByte();
-				Console.WriteLine(Convert.ToChar(data));
 				output.Write(data);
 			}
 		}
@@ -497,6 +518,7 @@ public partial class MainWindow : Gtk.Window
 		{
 			
 		}
+			output.Flush();
 			output.Close();
 			input.Close();
 		}
@@ -515,49 +537,73 @@ public partial class MainWindow : Gtk.Window
 		}
 	private long fillPadding(string file, long size)
 	{
-		BinaryWriter output = new BinaryWriter(File.OpenWrite( file)    );
-		
 		long count = 0;
-		
-		if(output.BaseStream.Length <= size)
+	
+		BinaryWriter output = new BinaryWriter(File.Open(file, FileMode.Append, FileAccess.Write, FileShare.ReadWrite) );
+		long num = size - output.BaseStream.Length;
+		try
 		{
-			while(output.BaseStream.Length <= size)
-			{
-				output.Write(0x00);
+				for(int i=0; i < num; i++)
+				{
+					output.BaseStream.WriteByte(0);
+				}
 				count++;
-			}
-			output.Close();
-			return count;
 		}
-		else
+		catch(IOException EXECP)
 		{
-			output.Close();
-			return 0;
 		}
-		return 0;
+		output.Close();
+		return count;
+
 	}
 	private void stripPadding(string file)
 	{
-		BinaryReader filer = new BinaryReader(File.Open(file,FileMode.Open,FileAccess.Read));
-		BinaryWriter filew = new BinaryWriter(File.Open(file,FileMode.Open,FileAccess.Write));
+		BinaryReader filer = new BinaryReader(File.Open(file,FileMode.Open,FileAccess.Read,FileShare.ReadWrite ));
+		BinaryWriter filew = new BinaryWriter(File.Open(file,FileMode.Open,FileAccess.Write,FileShare.ReadWrite));
 		long count = filer.BaseStream.Length;
 		
-
+		try
+		{
 			while(filer.BaseStream.Length <= count)
 			{
 				byte data = filer.ReadByte();
 				if(data != 0x00)
-					filew.Write(0x00);
+				{
+					Console.Write(Convert.ToChar(data));
+					filew.Write(data);
+				}
 			}
+		}
+		catch(EndOfStreamException execp)
+		{
+			Console.WriteLine(execp.Message);
+		}
+		filew.Flush();
 		filew.Close();
 		filer.Close();
 	}
 	private long getOverflow(string file, long size)
 	{
-		BinaryReader file_handle= new BinaryReader(File.Open(file,FileMode.Open,FileAccess.Read));
-		long csize = file_handle.BaseStream.Length;
-		file_handle.Close();
-		return csize - size;
+		
+			BinaryReader file_handle= new BinaryReader(File.Open(file,FileMode.Open,FileAccess.Read,FileShare.ReadWrite));
+			long csize = file_handle.BaseStream.Length;
+			file_handle.Close();
+			return csize - size;
+	}
+	private string searchForFile(string filename)
+	{
+		FileInfo ffinfo = new FileInfo(this.opened_ff_file);
+		string ffdir = ffinfo.Directory.FullName;
+		string dumpdir = ffdir + this.fslash + ffinfo.Name.Replace(ffinfo.Extension,"") + "_work" + this.fslash + "dump" + this.fslash;
+		string[] list = {"dat","inn","nge","mbs","ase","vvv","neo","img","ttf","dc5","nta","fnc"};
+		foreach(string ext in list)
+		{
+						
+			if(File.Exists(dumpdir + filename + "." + ext))
+				return filename + "."+ ext;
+			
+		}
+		return "";
 	}
 }
 

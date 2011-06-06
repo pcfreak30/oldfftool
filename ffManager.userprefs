@@ -1,10 +1,24 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" ctype="Workspace" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="ffManager/MainWindow.cs" ctype="Workbench">
+  <MonoDevelop.Ide.Workbench ActiveDocument="ffManager/Main.cs" ctype="Workbench">
     <Files>
       <File FileName="ffManager/Main.cs" Line="1" Column="1" />
-      <File FileName="ffManager/MainWindow.cs" Line="1" Column="1" />
+      <File FileName="ffManager/ffProfile.cs" Line="78" Column="2" />
     </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State expanded="True">
+          <Node name="ffManager" expanded="True">
+            <Node name="UserInterface" expanded="True">
+              <Node name="MainWindow">
+                <Option id="ShowAllFiles" value="True" />
+              </Node>
+            </Node>
+            <Node name="Main.cs" selected="True" />
+          </Node>
+        </State>
+      </Pad>
+    </Pads>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />
