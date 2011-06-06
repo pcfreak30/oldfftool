@@ -291,6 +291,167 @@ public partial class MainWindow : Gtk.Window
 				}
 			}
 			this.msgbox(this, DialogFlags.Modal,MessageType.Info,ButtonsType.Ok,"FastFile " + this.opened_ff_file + " Decompressed to:\n" + filesdir);
+			this.btn_comp.Sensitive = true;
+		}
+	private void compressfile_packed(string file)
+		{
+			Process p = new Process();
+			FileInfo ffinfo = new FileInfo(this.opened_ff_file);
+			string ffdir = ffinfo.Directory.FullName;
+			string fslash = "";
+			if(this.platform == "win32")
+				fslash = @"\";
+			else if(this.platform == "unix")
+				fslash = "/";
+		string console = this.ffprofile.getConsole();
+
+		string game = this.ffprofile.getGame();
+		string comp = "";
+		if(console == "ps3")
+		{
+			switch(game)
+			{
+				case "cod4":
+				case "waw":
+				comp = "-w -15";
+				break;
+				case "mw2":
+					comp = "";
+				break;
+			}
+		}
+		else if(console == "xbox")
+		{
+			
+			switch(game)
+			{
+				
+				case "waw":
+					comp = "-w -15";
+				break;
+				case "cod4":
+				case "mw2":
+					comp = "";
+				break;
+			}
+		}
+			string dumpdir = ffdir + fslash + ffinfo.Name.Replace(ffinfo.Extension,"") + "_work" + fslash + "dump/";
+			string[] file_parts= file.Split('.');
+			
+			string hex_offset = dumpdir;
+			for(int i=0; i < file_parts.Length -1;i++) hex_offset += file_parts[i];
+			if(!File.Exists(dumpdir + file))
+			{
+				this.msgbox(this, DialogFlags.Modal,MessageType.Error,ButtonsType.Close,"File: " + dumpdir + file + " does not exist!");
+				this.btn_decomp.Sensitive = true;
+				return;
+			}
+		if(this.platform == "win32")
+		{
+			ProcessStartInfo info = p.StartInfo;
+			info.FileName="packzip";
+			info.Arguments="-o 0x" + hex_offset + " " + comp +  @"""" +  dumpdir + file + @"""" + " " + @"""" + this.opened_ff_file + @"""";
+			info.WindowStyle = ProcessWindowStyle.Normal;
+		}
+		else if(this.platform == "unix")
+		{
+			ProcessStartInfo info = p.StartInfo;
+			info.FileName="wine";
+			info.Arguments="packzip -o 0x" + hex_offset + " " + comp +  @"""" + dumpdir + file + @"""" + " " + @"""" + this.opened_ff_file + @"""";
+			info.WindowStyle = ProcessWindowStyle.Normal;
+		}
+		p.Start();
+		p.WaitForExit();
+		this.processFiles_parts();
+		}
+		private void compressfiles_parts()
+		{
+			FileInfo ffinfo = new FileInfo(this.opened_ff_file);
+			string ffdir = ffinfo.Directory.FullName;
+			string fslash = "";
+			if(this.platform == "win32")
+				fslash = @"\";
+			else if(this.platform == "unix")
+				fslash = "/";
+			string filesdir = ffdir + fslash + ffinfo.Name.Replace(ffinfo.Extension,"") + "_work" + fslash + "files" + fslash;
+			string dumpdir = ffdir + fslash + ffinfo.Name.Replace(ffinfo.Extension,"") + "_work" + fslash + "dump" + fslash;
+			
+			XmlNodeList data = this.ffprofile.getFileList();
+			foreach(XmlNode file in data)
+			{
+				string file_name = file.Attributes["name"].Value;
+				long tsize = Convert.ToInt64(file.Attributes["size"].Value);
+			
+				foreach(XmlNode part in file.ChildNodes)
+				{
+					string part_name = part.Attributes["name"].Value;
+					string part_start= part.Attributes["startpos"].Value;
+					string part_end= part.Attributes["endpos"].Value;
+					string file_full_name = filesdir + file_name;
+					string part_full_name = dumpdir + part_name;
+					if(File.Exists(part_full_name))
+						this.write_part(part_full_name, file_full_name,part_start, part_end);
+					else this.msgbox(this, DialogFlags.Modal,MessageType.Error,ButtonsType.Close,"File: " + part_full_name + " does not exist!");
+				
+				}
+			}
+			this.msgbox(this, DialogFlags.Modal,MessageType.Info,ButtonsType.Ok,"FastFile " + this.opened_ff_file + " Decompressed to:\n" + filesdir);
+			this.btn_comp.Sensitive = true;
+		}
+
+
+	protected virtual void btn_comp_pressed (object sender, System.EventArgs e)
+	{
+		FileInfo ffinfo = new FileInfo(this.opened_ff_file);
+			string ffdir = ffinfo.Directory.FullName;
+			string fslash = "";
+			if(this.platform == "win32")
+				fslash = @"\";
+			else if(this.platform == "unix")
+				fslash = "/";
+			try
+			{
+				File.Copy(this.opened_ff_file,this.opened_ff_file + ".bak",true);
+			}
+			catch(IOException execp)
+			{}
+			string filesdir = ffdir + fslash + ffinfo.Name.Replace(ffinfo.Extension,"") + "_work" + fslash + "files" + fslash;
+			string dumpdir = ffdir + fslash + ffinfo.Name.Replace(ffinfo.Extension,"") + "_work" + fslash + "dump" + fslash;
+			XmlNodeList data = this.ffprofile.getFileList();
+			foreach(XmlNode file in data)
+			{
+				string file_name = file.Attributes["name"].Value;
+				long tsize = Convert.ToInt64(file.Attributes["size"].Value);
+				long pos=0;
+				long len=0;
+				this.fillPadding(filesdir + file_name,tsize);
+				long overflow_size = this.getOverflow(filesdir + file_name,tsize);
+				if(overflow_size > 0)
+				{
+					this.stripPadding(filesdir + file_name);
+					this.msgbox(this, DialogFlags.Modal,MessageType.Error,ButtonsType.Close,"File: " + filesdir + file_name + " is over the size limit by " + overflow_size + "..\n\t\tTotal Size Available:" + tsize);
+					return;
+				}
+				else
+				{
+					foreach(XmlNode part in file.ChildNodes)
+					{
+						string part_name = part.Attributes["name"].Value;
+						string part_start= part.Attributes["startpos"].Value;
+						string part_end= part.Attributes["endpos"].Value;
+						string file_full_name = filesdir + file_name;
+						string part_full_name = dumpdir + part_name;
+						len = Convert.ToInt64(part_end) - pos;
+						if(File.Exists(part_full_name))
+							this.write_part_back(part_full_name, file_full_name,pos,len, part_start);
+						else this.msgbox(this, DialogFlags.Modal,MessageType.Error,ButtonsType.Close,"File: " + part_full_name + " does not exist!");
+						pos += Convert.ToInt64(part_start);
+				}
+			}
+		}
+			
+			this.msgbox(this, DialogFlags.Modal,MessageType.Info,ButtonsType.Ok,"FastFile " + this.opened_ff_file + " Re-Compressed to:\n" + filesdir);
+			this.btn_comp.Sensitive = true;
 		}
 		private void write_part(string infile, string outfile, string start, string end)
 		{
@@ -311,14 +472,35 @@ public partial class MainWindow : Gtk.Window
 		{
 			
 		}
-		finally{
 			output.Close();
 			input.Close();
+		
+	}
+	private void write_part_back(string infile, string outfile, long src_start, long src_end,string dst_start)
+	{
+			BinaryReader input = new BinaryReader(File.Open(infile,FileMode.Open,FileAccess.Read));
+			BinaryWriter output = new BinaryWriter(File.Open(outfile,FileMode.Open,FileAccess.Write));
+			long ldst_start =  Convert.ToInt64(dst_start);
+			output.BaseStream.Seek(ldst_start,SeekOrigin.Begin);
+			input.BaseStream.Seek(src_start, SeekOrigin.Begin);
+			Console.WriteLine("src_start =" + src_start.ToString() + " ldst_start =" + ldst_start.ToString() + " " +  src_end.ToString());
+			Console.WriteLine("Writing Data :");
+		try{
+			while(input.BaseStream.Position <=  src_end)
+			{
+				byte data = input.ReadByte();
+				Console.WriteLine(Convert.ToChar(data));
+				output.Write(data);
+			}
+		}
+		catch(EndOfStreamException EOFS)
+		{
+			
 		}
 			output.Close();
 			input.Close();
 		}
-		private void msgbox(Window parent_window, DialogFlags flags, MessageType type, ButtonsType btype, string msg)
+			private void msgbox(Window parent_window, DialogFlags flags, MessageType type, ButtonsType btype, string msg)
 		{
 			MessageDialog msgb = new MessageDialog(parent_window,
 		                                      flags,
@@ -331,6 +513,57 @@ public partial class MainWindow : Gtk.Window
 			msgb.Dispose();
 		
 		}
+	private long fillPadding(string file, long size)
+	{
+		BinaryWriter output = new BinaryWriter(
+		                                       File.Open(
+		                                                 file,
+		                                                 FileMode.Open,
+		                                                 FileAccess.Write
+		                                                 )
+		                                       );
+		long count = 0;
+		/*
+		if(output.BaseStream.Length <= size)
+		{
+			while(output.BaseStream.Length <= size)
+			{
+				output.Write(0x00);
+				count++;
+			}
+			return count;
+		}
+		else
+		{
+			return 0;
+		}
+		*/
+		return 0;
+		output.Close();
+	}
+	private void stripPadding(string file)
+	{
+		BinaryReader filer = new BinaryReader(File.Open(file,FileMode.Open,FileAccess.Read));
+		BinaryWriter filew = new BinaryWriter(File.Open(file,FileMode.Open,FileAccess.Write));
+		long count = filer.BaseStream.Length;
+		
+
+			while(filer.BaseStream.Length <= count)
+			{
+				byte data = filer.ReadByte();
+				if(data != 0x00)
+					filew.Write(0x00);
+			}
+		filew.Close();
+		filer.Close();
+	}
+	private long getOverflow(string file, long size)
+	{
+		BinaryReader file_handle= new BinaryReader(File.Open(file,FileMode.Open,FileAccess.Read));
+		long csize = file_handle.BaseStream.Length;
+		file_handle.Close();
+		return csize - size;
+	}
 }
 
 		

@@ -132,6 +132,7 @@
                         <property name="Type">TextOnly</property>
                         <property name="Label" translatable="yes">Compress</property>
                         <property name="UseUnderline">True</property>
+                        <signal name="Clicked" handler="btn_comp_pressed" />
                       </widget>
                       <packing>
                         <property name="Position">1</property>
