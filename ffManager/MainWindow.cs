@@ -515,14 +515,8 @@ public partial class MainWindow : Gtk.Window
 		}
 	private long fillPadding(string file, long size)
 	{
-		BinaryWriter output = new BinaryWriter(
-		                                       File.Open(
-		                                                 file,
-		                                                 FileMode.Open,
-		                                                 FileAccess.Write
-		                                                 )
-		                                       );
-		/*
+		BinaryWriter output = new BinaryWriter(File.OpenWrite( file)    );
+		
 		long count = 0;
 		
 		if(output.BaseStream.Length <= size)
@@ -540,9 +534,6 @@ public partial class MainWindow : Gtk.Window
 			output.Close();
 			return 0;
 		}
-		
-		output.Close();
-		*/
 		return 0;
 	}
 	private void stripPadding(string file)
