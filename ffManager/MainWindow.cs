@@ -3,6 +3,7 @@ using Gtk;
 using System.IO;
 using System.Diagnostics;
 using ffManager;
+using System.Xml;
 public partial class MainWindow : Gtk.Window
 {
 	private string platform;
@@ -67,6 +68,9 @@ public partial class MainWindow : Gtk.Window
 		
 		string ffdir = ffinfo.Directory.FullName;
 		string workdir = ffdir + fslash + ffinfo.Name.Replace(ffinfo.Extension,"") + "_work";
+		string dumpdir= ffdir + fslash + ffinfo.Name.Replace(ffinfo.Extension,"") + "_work" + fslash + "dump";
+		string filesdir= ffdir + fslash + ffinfo.Name.Replace(ffinfo.Extension,"") + "_work" + fslash + "files";
+		
 		if(Directory.Exists(workdir))
 		{
 			MessageDialog msg = new MessageDialog(this,
@@ -84,9 +88,12 @@ public partial class MainWindow : Gtk.Window
 				}
 				catch(Exception Excep)
 				{
-					Console.WriteLine(Excep.Message.ToString());
 					return;
 				}
+			}
+			else if(resp == ResponseType.No)
+			{
+				this.ff_open_handler(new object(), new EventArgs());
 			}
 			msg.Destroy();
 			msg.Dispose();
@@ -98,6 +105,8 @@ public partial class MainWindow : Gtk.Window
 		try
 		{
 			Directory.CreateDirectory(workdir);
+			Directory.CreateDirectory(dumpdir);
+			Directory.CreateDirectory(filesdir);
 		}
 		catch(Exception Excep)
 		{
@@ -108,22 +117,24 @@ public partial class MainWindow : Gtk.Window
 		this.btn_decomp.Sensitive = true;
 		this.ff_profile_box.Sensitive=true;
 		this.opened_ff_file= fname;
+		if(this.ffprofile_chooser.Filename != "" || this.ffprofile_chooser.Filename != null)
+			this.ffprofile.setProfile(this.ffprofile_chooser.Filename);
+		else
+			this.ffprofile.setProfile("");
 	}
 	protected virtual void btn_decomp_pressed (object sender, System.EventArgs e)
 	{
 		if(this.ffprofile_chooser.Filename == "" || this.ffprofile_chooser.Filename == null || !this.ffprofile.isValid())
 		{
-			MessageDialog msg = new MessageDialog(this,
-			                                      DialogFlags.Modal,
-			                                      MessageType.Error,
-			                                      ButtonsType.Close,
-			                                      "Please select a Valid FastFile Profile"
-			                                      );
-			msg.Run();
-			msg.Destroy();
-			msg.Dispose();
+			this.msgbox(this,
+			            DialogFlags.Modal,
+			            MessageType.Error,
+			            ButtonsType.Close,
+			            "Please select a Valid FastFile Profile"
+			            );
 			return;	
 		}
+		this.btn_decomp.Sensitive = false;
 		Process p = new Process();
 		FileInfo ffinfo = new FileInfo(this.opened_ff_file);
 		string ffdir = ffinfo.Directory.FullName;
@@ -132,34 +143,67 @@ public partial class MainWindow : Gtk.Window
 			fslash = @"\";
 		else if(this.platform == "unix")
 			fslash = "/";
-		string workdir = ffdir + fslash + ffinfo.Name.Replace(ffinfo.Extension,"") + "_work";
-		string ffformat = this.ffprofile.getFormat();
+		string dumpdir = ffdir + fslash + ffinfo.Name.Replace(ffinfo.Extension,"") + "_work" + fslash + "dump";
+		string console = this.ffprofile.getConsole();
+
+		string game = this.ffprofile.getGame();
+		string comp = "";
+		string compmode = "";
+		if(console == "ps3")
+		{
+			switch(game)
+			{
+				case "cod4":
+				case "waw":
+					comp = "-z -15";
+				compmode = "part";
+				break;
+				case "mw2":
+					comp = "";
+					compmode = "pack";
+				break;
+			}
+		}
+		else if(console == "xbox")
+		{
+			
+			switch(game)
+			{
+				
+				case "waw":
+					comp = "-z -15";
+					compmode = "part";
+				break;
+				case "cod4":
+					comp = "";
+					compmode = "part";
+				break;
+				case "mw2":
+					comp = "";
+					compmode = "pack";
+				break;
+			}
+		}
 		if(this.platform == "win32")
 		{
 			ProcessStartInfo info = p.StartInfo;
 			info.FileName="offzip";
-			if(ffformat == "xbox")
-				info.Arguments="-a " + @"""" + this.opened_ff_file + @"""" + " " + @"""" + workdir + @"""" + " 0";
-			else if(ffformat == "ps3")
-				info.Arguments="-a -z -15 " + @"""" + this.opened_ff_file + @"""" + " " + @"""" + workdir + @"""" + " 0";
+			info.Arguments="-a " + comp + " " + @"""" + this.opened_ff_file + @"""" + " " + @"""" + dumpdir + @"""" + " 0";
 			info.WindowStyle = ProcessWindowStyle.Normal;
 		}
 		else if(this.platform == "unix")
 		{
 			ProcessStartInfo info = p.StartInfo;
 			info.FileName="wine";
-			if(ffformat == "xbox")
-				info.Arguments=" offzip -a " + @"""" + this.opened_ff_file + @"""" + " " + @"""" + workdir + @"""" + " 0";
-			else if(ffformat == "ps3")
-				info.Arguments="offzip -a -z -15 " + @"""" + this.opened_ff_file + @"""" + " " + @"""" + workdir + @"""" + " 0";
+			info.Arguments="offzip -a " + comp + " " + @"""" + this.opened_ff_file + @"""" + " " + @"""" + dumpdir + @"""" + " 0";
 			info.WindowStyle = ProcessWindowStyle.Normal;
 		}
 		p.Start();
 		p.WaitForExit();
-		if(ffformat == "xbox")
-			this.processFiles_XBOX();
-		else if(ffformat == "ps3")
-			this.processFiles_PS3();
+		if(compmode  == "pack")
+			this.processFiles_packed();
+		else if(compmode == "part")
+			this.processFiles_parts();
 	}
 	
 	protected virtual void ff_profile_open_callback (object sender, System.EventArgs e)
@@ -167,28 +211,125 @@ public partial class MainWindow : Gtk.Window
 		if(this.ffprofile_chooser.Filename == "" || this.ffprofile_chooser.Filename == null)
 			return;
 		this.ffprofile.setProfile(this.ffprofile_chooser.Filename);
-		if(!this.ffprofile.isValid())
+		if(this.ffprofile.isValid() == false)
 		{
-			MessageDialog msg = new MessageDialog(this,
-			                                      DialogFlags.Modal,
-			                                      MessageType.Error,
-			                                      ButtonsType.Close,
-			                                      "Invalid FastFile Profile"
-			                                      );
-			msg.Run();
-			msg.Destroy();
-			msg.Dispose();
+			this.msgbox(this,
+			            DialogFlags.Modal,
+			            MessageType.Error,
+			            ButtonsType.Close,
+			            "Invalid FastFile Profile"
+			            );
 			return;	
 		}
 
 	}
-		private void processFiles_XBOX()
+		private void processFiles_packed()
+		{
+			string pack_extract = this.ffprofile.getPackedDump();
+			Process p = new Process();
+			FileInfo ffinfo = new FileInfo(this.opened_ff_file);
+			string ffdir = ffinfo.Directory.FullName;
+			string fslash = "";
+			if(this.platform == "win32")
+				fslash = @"\";
+			else if(this.platform == "unix")
+				fslash = "/";
+			string dumpdir = ffdir + fslash + ffinfo.Name.Replace(ffinfo.Extension,"") + "_work" + fslash + "dump/";
+			if(!File.Exists(dumpdir + pack_extract))
+			{
+				this.msgbox(this, DialogFlags.Modal,MessageType.Error,ButtonsType.Close,"File: " + dumpdir + pack_extract + " does not exist!");
+				this.btn_decomp.Sensitive = true;
+				return;
+			}
+		if(this.platform == "win32")
+		{
+			ProcessStartInfo info = p.StartInfo;
+			info.FileName="offzip";
+			info.Arguments="-a " + @"""" +  dumpdir  + pack_extract + @"""" + " " + @"""" + dumpdir + @"""" + " 0";
+			info.WindowStyle = ProcessWindowStyle.Normal;
+		}
+		else if(this.platform == "unix")
+		{
+			ProcessStartInfo info = p.StartInfo;
+			info.FileName="wine";
+			info.Arguments="offzip -a " + @"""" + dumpdir +  pack_extract + @"""" + " " + @"""" + dumpdir + @"""" + " 0";
+			info.WindowStyle = ProcessWindowStyle.Normal;
+		}
+		p.Start();
+		p.WaitForExit();
+		this.processFiles_parts();
+		}
+		private void processFiles_parts()
+		{
+			FileInfo ffinfo = new FileInfo(this.opened_ff_file);
+			string ffdir = ffinfo.Directory.FullName;
+			string fslash = "";
+			if(this.platform == "win32")
+				fslash = @"\";
+			else if(this.platform == "unix")
+				fslash = "/";
+			string filesdir = ffdir + fslash + ffinfo.Name.Replace(ffinfo.Extension,"") + "_work" + fslash + "files" + fslash;
+			string dumpdir = ffdir + fslash + ffinfo.Name.Replace(ffinfo.Extension,"") + "_work" + fslash + "dump" + fslash;
+			
+			XmlNodeList data = this.ffprofile.getFileList();
+			foreach(XmlNode file in data)
+			{
+				string file_name = file.Attributes["name"].Value;
+				long tsize = Convert.ToInt64(file.Attributes["size"].Value);
+			
+				foreach(XmlNode part in file.ChildNodes)
+				{
+					string part_name = part.Attributes["name"].Value;
+					string part_start= part.Attributes["startpos"].Value;
+					string part_end= part.Attributes["endpos"].Value;
+					string file_full_name = filesdir + file_name;
+					string part_full_name = dumpdir + part_name;
+					if(File.Exists(part_full_name))
+						this.write_part(part_full_name, file_full_name,part_start, part_end);
+					else this.msgbox(this, DialogFlags.Modal,MessageType.Error,ButtonsType.Close,"File: " + part_full_name + " does not exist!");
+				
+				}
+			}
+			this.msgbox(this, DialogFlags.Modal,MessageType.Info,ButtonsType.Ok,"FastFile " + this.opened_ff_file + " Decompressed to:\n" + filesdir);
+		}
+		private void write_part(string infile, string outfile, string start, string end)
+		{
+			BinaryReader input = new BinaryReader(File.Open(infile,FileMode.Open,FileAccess.Read));
+			BinaryWriter output = new BinaryWriter(File.Open(outfile,FileMode.Append,FileAccess.Write));
+			long posa =  Convert.ToInt64(start);
+			long posb =  Convert.ToInt64(end);
+			input.BaseStream.Seek(posa,SeekOrigin.Begin);
+		try{
+			while(input.BaseStream.Position <= posb)
+			{
+				byte data = input.ReadByte();
+				if(data != 0x00)
+					output.Write(data);
+			}
+		}
+		catch(EndOfStreamException EOFS)
 		{
 			
 		}
-		private void processFiles_PS3()
+		finally{
+			output.Close();
+			input.Close();
+		}
+			output.Close();
+			input.Close();
+		}
+		private void msgbox(Window parent_window, DialogFlags flags, MessageType type, ButtonsType btype, string msg)
 		{
-			
+			MessageDialog msgb = new MessageDialog(parent_window,
+		                                      flags,
+		                                      type,
+		                                      btype,
+		                                      msg
+		                                      );
+			msgb.Run();
+			msgb.Destroy();
+			msgb.Dispose();
+		
 		}
 }
 
