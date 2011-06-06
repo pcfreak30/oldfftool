@@ -522,8 +522,9 @@ public partial class MainWindow : Gtk.Window
 		                                                 FileAccess.Write
 		                                                 )
 		                                       );
-		long count = 0;
 		/*
+		long count = 0;
+		
 		if(output.BaseStream.Length <= size)
 		{
 			while(output.BaseStream.Length <= size)
@@ -531,15 +532,18 @@ public partial class MainWindow : Gtk.Window
 				output.Write(0x00);
 				count++;
 			}
+			output.Close();
 			return count;
 		}
 		else
 		{
+			output.Close();
 			return 0;
 		}
+		
+		output.Close();
 		*/
 		return 0;
-		output.Close();
 	}
 	private void stripPadding(string file)
 	{
