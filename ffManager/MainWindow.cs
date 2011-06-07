@@ -8,29 +8,50 @@ public partial class MainWindow : Gtk.Window
 {
 	private string platform;
 	private string opened_ff_file;
-	public string game;
-	public string console;
 	private string fslash;
+	private string console;
 	private ffProfile ffprofile = new ffProfile();
 	public MainWindow () : base(Gtk.WindowType.Toplevel)
 	{
-		Build ();
-		OperatingSystem os = Environment.OSVersion;
-		PlatformID pid = os.Platform;
-		switch (pid) 
-        {
-        case PlatformID.Win32NT:
-        case PlatformID.Win32S:
-        case PlatformID.Win32Windows:
-        case PlatformID.WinCE:
-             this.platform = "win32";
-			this.fslash = @"\";
-            break;
-        case PlatformID.Unix:
-            this.platform = "unix";
-			this.fslash = @"/";
-            break;
-        }
+		Build ();		
+		this.platform = MainWindow.getOS();
+		if(this.platform == "unix")
+		{
+				if(!File.Exists("/usr/bin/wine") && !File.Exists("/usr/local/bin/wine"))
+				{
+					this.msgbox(this,DialogFlags.DestroyWithParent,MessageType.Error,ButtonsType.Close,"ERROR: Wine was not found on your system!\n\t\tPlease install wine and re-run ffManager..");
+					this.menubar1.Sensitive = false;
+					this.notebook1.Sensitive= false;
+				}
+				if(!File.Exists(Directory.GetCurrentDirectory() + "/offzip.exe"))
+				{
+					this.msgbox(this,DialogFlags.DestroyWithParent,MessageType.Error,ButtonsType.Close,"ERROR: offzip.exe was NOT found in the ffManager folder!\n\t\tPlease re-download and re-run ffManager..");
+					this.menubar1.Sensitive = false;
+					this.notebook1.Sensitive= false;
+				}
+				if(!File.Exists( Directory.GetCurrentDirectory() +"/packzip.exe"))
+				{
+					this.msgbox(this,DialogFlags.DestroyWithParent,MessageType.Error,ButtonsType.Close,"ERROR: packzip.exe was NOT found in the ffManager folder!\n\t\tPlease re-download and re-run ffManager..");
+					this.menubar1.Sensitive = false;
+					this.notebook1.Sensitive= false;
+				}
+		}
+		else if(this.platform == "win32")
+		{
+				if(!File.Exists( Directory.GetCurrentDirectory() + @"\offzip.exe"))
+				{
+					this.msgbox(this,DialogFlags.DestroyWithParent,MessageType.Error,ButtonsType.Close,"ERROR: offzip.exe was NOT found in the ffManager folder!\n\t\tPlease re-download and re-run ffManager..");
+					this.menubar1.Sensitive = false;
+					this.notebook1.Sensitive= false;
+				}
+				if(!File.Exists( Directory.GetCurrentDirectory() + @"\packzip.exe"))
+				{
+					this.msgbox(this,DialogFlags.DestroyWithParent,MessageType.Error,ButtonsType.Close,"ERROR: packzip.exe was NOT found in the ffManager folder!\n\t\tPlease re-download and re-run ffManager..");
+					this.menubar1.Sensitive = false;
+					this.notebook1.Sensitive= false;
+				}
+		}
+
 		FileFilter filter = new FileFilter();
 		
 		filter.Name = "FastFile XML Profile";
@@ -39,7 +60,25 @@ public partial class MainWindow : Gtk.Window
 		this.ffprofile_chooser.AddFilter(filter);
 		this.ffprofile_chooser.FileSet+= ff_profile_open_callback;
 	}
-
+	public static string getOS()
+	{
+		OperatingSystem os = Environment.OSVersion;
+		PlatformID pid = os.Platform;
+		string result = "";
+		switch (pid) 
+        {
+        case PlatformID.Win32NT:
+        case PlatformID.Win32S:
+        case PlatformID.Win32Windows:
+        case PlatformID.WinCE:
+            result= "win32";
+            break;
+        case PlatformID.Unix:
+           result= "unix";
+			break;
+        }
+		return result;
+	}
 	protected void OnDeleteEvent (object sender, DeleteEventArgs a)
 	{
 		Application.Quit ();
@@ -65,11 +104,31 @@ public partial class MainWindow : Gtk.Window
 	private void ff_open_callback(string fname)
 	{
 		FileInfo ffinfo = new FileInfo(fname);
-		
+		ffInfo fastfile_data = new ffInfo(fname);
+		string fastfile_header = fastfile_data.getHeader();
+		string fastfile_version= fastfile_data.getVersion();		if(fastfile_header != "IWff0100" && fastfile_header != "IWffu100" )
+		{
+			this.msgbox(this, DialogFlags.DestroyWithParent,MessageType.Error,ButtonsType.Ok,"Oops! You either gave a corrupt fast file or a file that is NOT a fast file...\n Please open a VALID fastfile!");
+			return;
+		}
+		else if(fastfile_header == "IWffs100" )
+		{
+			this.msgbox(this, DialogFlags.DestroyWithParent,MessageType.Error,ButtonsType.Ok,"Oops! You gave a SIGNED fastfile. ffManager does not support these\n Please open a VALID UN-SIGNED fastfile!");
+			return;
+		}
+		if(fastfile_version == "invalid")
+		{
+			this.msgbox(this, DialogFlags.DestroyWithParent,MessageType.Error,ButtonsType.Ok,"Oops! You gave a FastFile for a game ffManager does not support...\n Please open a VALID SUPPORTED fastfile!");
+			return;
+		}
+		else
+		{
+			this.console = fastfile_version;
+		}
 		string ffdir = ffinfo.Directory.FullName;
-		string workdir = ffdir + this.fslash + ffinfo.Name.Replace(ffinfo.Extension,"") + "_work";
-		string dumpdir= ffdir + this.fslash + ffinfo.Name.Replace(ffinfo.Extension,"") + "_work" + this.fslash + "dump";
-		string filesdir= ffdir + this.fslash + ffinfo.Name.Replace(ffinfo.Extension,"") + "_work" + this.fslash + "files";
+		string workdir = ffdir + this.fslash + ffinfo.Name.Replace(ffinfo.Extension,"") + "_work" + this.fslash;
+		string dumpdir= workdir +  "dump" + this.fslash;
+		string filesdir= workdir + "files"+ this.fslash;
 		
 		if(Directory.Exists(workdir))
 		{
@@ -97,10 +156,6 @@ public partial class MainWindow : Gtk.Window
 			}
 			msg.Destroy();
 			msg.Dispose();
-			if(resp == ResponseType.No)
-			{
-				return;
-			}
 		}
 		try
 		{
@@ -118,9 +173,9 @@ public partial class MainWindow : Gtk.Window
 		this.ff_profile_box.Sensitive=true;
 		this.opened_ff_file= fname;
 		if(this.ffprofile_chooser.Filename != "" || this.ffprofile_chooser.Filename != null)
-			this.ffprofile.setProfile(this.ffprofile_chooser.Filename);
+			this.ffprofile.setProfile(this.ffprofile_chooser.Filename,this.opened_ff_file);
 		else
-			this.ffprofile.setProfile("");
+			this.ffprofile.setProfile("",this.opened_ff_file);
 		
 	}
 	protected virtual void btn_decomp_pressed (object sender, System.EventArgs e)
@@ -136,74 +191,19 @@ public partial class MainWindow : Gtk.Window
 			return;	
 		}
 		this.btn_decomp.Sensitive = false;
-		Process p = new Process();
-		FileInfo ffinfo = new FileInfo(this.opened_ff_file);
-		string ffdir = ffinfo.Directory.FullName;
-		string dumpdir = ffdir + this.fslash + ffinfo.Name.Replace(ffinfo.Extension,"") + "_work" + this.fslash + "dump";
-		string comp = "";
-		string compmode = "";
-		if(this.ffprofile.getConsole() == "ps3")
+
+		if(this.console == "ps3")
 		{
-			switch(this.ffprofile.getGame())
-			{
-				case "cod4":
-				case "waw":
-					comp = "-z -15";
-				compmode = "part";
-				break;
-				case "mw2":
-					comp = "";
-					compmode = "pack";
-				break;
-			}
+			ffManager.Decompress.PS3.Decompressor  ps3_decomp= new ffManager.Decompress.PS3.Decompressor(this.opened_ff_file,this.ffprofile);
+			ps3_decomp.decompress();
 		}
-		else if(this.ffprofile.getConsole() == "xbox")
-		{
-			
-			switch(this.ffprofile.getGame())
-			{
-				
-				case "waw":
-					comp = "-z -15";
-					compmode = "part";
-				break;
-				case "cod4":
-					comp = "";
-					compmode = "part";
-				break;
-				case "mw2":
-					comp = "";
-					compmode = "pack";
-				break;
-			}
-		}
-		if(this.platform == "win32")
-		{
-			ProcessStartInfo info = p.StartInfo;
-			info.FileName="offzip";
-			info.Arguments="-a " + comp + " " + @"""" + this.opened_ff_file + @"""" + " " + @"""" + dumpdir + @"""" + " 0";
-			info.WindowStyle = ProcessWindowStyle.Normal;
-		}
-		else if(this.platform == "unix")
-		{
-			ProcessStartInfo info = p.StartInfo;
-			info.FileName="wine";
-			info.Arguments="offzip -a " + comp + " " + @"""" + this.opened_ff_file + @"""" + " " + @"""" + dumpdir + @"""" + " 0";
-			info.WindowStyle = ProcessWindowStyle.Normal;
-		}
-		p.Start();
-		p.WaitForExit();
-		if(compmode  == "pack")
-			this.processFiles_packed();
-		else if(compmode == "part")
-			this.processFiles_parts();
 	}
 	
 	protected virtual void ff_profile_open_callback (object sender, System.EventArgs e)
 	{
 		if(this.ffprofile_chooser.Filename == "" || this.ffprofile_chooser.Filename == null)
 			return;
-		this.ffprofile.setProfile( this.ffprofile_chooser.Filename);
+		this.ffprofile.setProfile( this.ffprofile_chooser.Filename, this.opened_ff_file);
 		if(this.ffprofile.isValid() == false)
 		{
 			this.msgbox(this,

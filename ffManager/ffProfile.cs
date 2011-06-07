@@ -5,14 +5,16 @@ namespace ffManager
 	public class ffProfile
 	{
 		private string profile;
+		private ffInfo fastfile_info;
 		private XmlDocument xml= new XmlDocument();
 		public ffProfile ()
 		{
 		}
-		public void setProfile(string file)
+		public void setProfile(string file,string fastfile)
 		{
 			this.profile = file;
 			this.xml= new XmlDocument();
+			this.fastfile_info= new ffInfo(fastfile);
 		}	
 		public bool isValid()
 		{
@@ -24,26 +26,12 @@ namespace ffManager
 			{
 				return false;
 			}
-			string game = this.getGame();
 			string console = this.getConsole();
 			int valid = 0;
 			switch(console)
 			{
 				case "ps3":
 				case "xbox":
-					valid = 1;
-				break;
-				default:
-					valid = 0;
-				break;
-			}
-			if(valid == 0)
-				return false;
-			switch(game)
-			{
-				case "cod4":
-				case "mw2":
-				case "waw":
 					valid = 1;
 				break;
 				default:

@@ -72,12 +72,17 @@
     <Compile Include="Main.cs" />
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="ffProfile.cs" />
+    <Compile Include="ffInfo.cs" />
+    <Compile Include="compress_xbox.cs" />
+    <Compile Include="decompress_ps3.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <None Include="offzip.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="packzip.exe" />
+    <None Include="packzip.exe">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 </Project>
