@@ -75,6 +75,8 @@
     <Compile Include="ffInfo.cs" />
     <Compile Include="compress_xbox.cs" />
     <Compile Include="decompress_ps3.cs" />
+    <Compile Include="decompress_xbox.cs" />
+    <Compile Include="compress_ps3.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

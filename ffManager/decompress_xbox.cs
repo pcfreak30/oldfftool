@@ -5,7 +5,7 @@ using System.Diagnostics;
 using System.Xml;
 namespace ffManager
 {
-	namespace Decompress.PS3
+	namespace Decompress.XBOX
 	{
 		public class Decompressor
 		{
@@ -40,35 +40,11 @@ namespace ffManager
 			public void decompress()
 			{
 				ffInfo fastfle_info = new ffInfo(this.fastfile);
-				if(fastfle_info.getVersion() == "mw2")
+				if(fastfle_info.getVersion() == "cod4")
 				{
-					this.decompress_dump();
+					this.decompress_cod4();
 					return;
 				}
-				
-				ProcessStartInfo psinfo = new ProcessStartInfo();
-				psinfo.UseShellExecute = true;
-				psinfo.WindowStyle = ProcessWindowStyle.Normal;
-				psinfo.CreateNoWindow = true;
-				if(this.os == "unix")
-				{
-					psinfo.FileName = "wine";
-					psinfo.Arguments = "offzip -a -z -15 " + @"""" + this.fastfile + @"""" + " " + @"""" + this.dumpdir + @"""" + " 0";
-					
-				}
-				else if(this.os == "win32")
-				{
-					psinfo.FileName = "offzip";
-					psinfo.Arguments = "-a -z -15 " + @"""" + this.fastfile + @"""" + " " + @"""" + this.dumpdir + @"""" + " 0";
-				}
-				Process ps = new Process();
-				ps.StartInfo = psinfo;
-				ps.Start();
-				ps.WaitForExit();
-				this.extract_scripts();
-			}
-			private void decompress_dump()
-			{
 				ProcessStartInfo psinfo = new ProcessStartInfo();
 				psinfo.UseShellExecute = true;
 				psinfo.WindowStyle = ProcessWindowStyle.Normal;
@@ -88,10 +64,34 @@ namespace ffManager
 				ps.StartInfo = psinfo;
 				ps.Start();
 				ps.WaitForExit();
+
 				this.extract_dump();	
+				this.extract_scripts();
 			}
-			
-			
+			private void decompress_cod4()
+			{
+				ProcessStartInfo psinfo = new ProcessStartInfo();
+				psinfo.UseShellExecute = true;
+				psinfo.WindowStyle = ProcessWindowStyle.Normal;
+				psinfo.CreateNoWindow = true;
+				if(this.os == "unix")
+				{
+					psinfo.FileName = "wine";
+					psinfo.Arguments = "offzip -a " + @"""" + this.fastfile + @"""" + " " + @"""" + this.dumpdir + @"""" + " 0";
+					
+				}
+				else if(this.os == "win32")
+				{
+					psinfo.FileName = "offzip";
+					psinfo.Arguments = "-a " + @"""" + this.fastfile + @"""" + " " + @"""" + this.dumpdir + @"""" + " 0";
+				}
+				Process ps = new Process();
+				ps.StartInfo = psinfo;
+				ps.Start();
+				ps.WaitForExit();
+				ffInfo fastfle_info = new ffInfo(this.fastfile);
+				this.extract_scripts();
+			}
 			private void extract_dump()
 			{
 				DirectoryInfo dumpinfo = new DirectoryInfo(this.workdir);
@@ -100,9 +100,8 @@ namespace ffManager
 					
 					foreach(FileInfo dat in files)
 					{
-						if(dat.Extension == ".dat")
+						if(dat.Extension == "dat")
 						{
-							Console.Write(dat.FullName);
 							ProcessStartInfo psinfo = new ProcessStartInfo();
 							psinfo.UseShellExecute = true;
 							psinfo.WindowStyle = ProcessWindowStyle.Normal;
@@ -110,7 +109,7 @@ namespace ffManager
 							if(this.os == "unix")
 							{
 								psinfo.FileName = "wine";
-								psinfo.Arguments = "offzip -a " + @"""" + dat.FullName + @"""" + " " + @"""" + this.dumpdir + @"""" + " 0";
+								psinfo.Arguments = "offzip -a" + @"""" + dat.FullName + @"""" + " " + @"""" + this.dumpdir + @"""" + " 0";
 					
 							}
 							else if(this.os == "win32")
@@ -118,13 +117,12 @@ namespace ffManager
 								psinfo.FileName = "offzip";
 								psinfo.Arguments = "-a " + @"""" + dat.FullName + @"""" + " " + @"""" + this.dumpdir + @"""" + " 0";
 							}
-
 							Process ps = new Process();
 							ps.StartInfo = psinfo;
+							Console.WriteLine(psinfo.Arguments);
 							ps.Start();
 							ps.WaitForExit();
-							Console.Clear();
-							Console.WriteLine(psinfo.Arguments);
+							break;
 						}
 						this.extract_scripts();
 					}
@@ -140,6 +138,7 @@ namespace ffManager
 			private void extract_scripts()
 			{
 					XmlNodeList scripts = this.profile.getFileList();
+					Console.WriteLine("Extracting");
 					foreach(XmlNode file in scripts)
 					{
 						string file_name = file.Attributes["name"].Value;
@@ -155,7 +154,6 @@ namespace ffManager
 								Int64 part_start= Convert.ToInt64(part.Attributes["startpos"].Value);
 								Int64 part_end= Convert.ToInt64(part.Attributes["endpos"].Value);
 								string file_full_name = this.filesdir + file_name;
-								Console.WriteLine(file_full_name);
 								BinaryReader input = new BinaryReader(File.Open(part_full_name,FileMode.Open,FileAccess.Read,FileShare.ReadWrite));
 								BinaryWriter output = new BinaryWriter(File.Open(file_full_name,FileMode.Append,FileAccess.Write,FileShare.ReadWrite));
 								input.BaseStream.Seek(part_start,SeekOrigin.Begin);

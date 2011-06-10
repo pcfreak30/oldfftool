@@ -1,9 +1,14 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" ctype="Workspace" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="ffManager/Main.cs" ctype="Workbench">
+  <MonoDevelop.Ide.Workbench ActiveDocument="ffManager/decompress_xbox.cs" ctype="Workbench">
     <Files>
       <File FileName="ffManager/Main.cs" Line="1" Column="1" />
-      <File FileName="ffManager/ffProfile.cs" Line="78" Column="2" />
+      <File FileName="ffManager/ffInfo.cs" Line="22" Column="5" />
+      <File FileName="ffManager/compress_xbox.cs" Line="16" Column="1" />
+      <File FileName="ffManager/MainWindow.cs" Line="222" Column="4" />
+      <File FileName="ffManager/decompress_ps3.cs" Line="104" Column="8" />
+      <File FileName="ffManager/ffProfile.cs" Line="21" Column="7" />
+      <File FileName="ffManager/decompress_xbox.cs" Line="72" Column="33" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
@@ -14,7 +19,7 @@
                 <Option id="ShowAllFiles" value="True" />
               </Node>
             </Node>
-            <Node name="Main.cs" selected="True" />
+            <Node name="decompress_xbox.cs" selected="True" />
           </Node>
         </State>
       </Pad>

@@ -15,14 +15,12 @@ namespace ffManager
 			BinaryReader datain = new BinaryReader(
 			                                       File.OpenRead(this.fastfile)
 			                                       );
-			char b;
-			StringBuilder sbuild = new StringBuilder();
+			string datout = "";
 			for(int i=0; i < 10; i++)
 			{
-				b = datain.ReadChar();
-				sbuild.Append(b);
+				datout += Convert.ChangeType(datain.ReadByte(),TypeCode.String);
 			}
-			return sbuild.ToString();
+			return datout;
 		}
 		public string getVersion()
 		{
@@ -41,13 +39,12 @@ namespace ffManager
 				data += c.ToString();
 			}
 			Int32 version = Convert.ToInt32(data);
-			
 			switch(version)
 			{
-				case 269:
+				case 113:
 					return "mw2";
 				break;
-				case 387:
+				case 1131:
 					return "waw";
 				break;
 				case 1:
