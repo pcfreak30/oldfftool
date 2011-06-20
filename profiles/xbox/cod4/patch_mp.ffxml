@@ -1,0 +1,60 @@
+﻿
+<profile>
+	<file name="_globallogic.gsc" size="157963">
+		<datafile name="0000400c" startpos="1180314" endpos="1338276" />
+	</file>
+	<file name="_weapons.gsc" size="40458">
+		<datafile name="0000400c" startpos="1490168" endpos="1530625" />
+	</file>	
+	<file name="dom.gsc" size="28676">
+		<datafile name="0000400c" startpos="1530665" endpos="1559340" />
+	</file>
+	<file name="_hud_util.gsc" size="17771">
+		<datafile name="0000400c" startpos="1374155" endpos="1391925" />
+	</file>
+	<file name="_spawnlogic.gsc" size="57613">
+		<datafile name="0000400c" startpos="1401096" endpos="1458708" />
+	</file>
+	<file name="_rank.gsc" size="31374">
+		<datafile name="0000400c" startpos="1458750" endpos="1490123" />
+	</file>
+	<file name="war.gsc" size="5720">
+		<datafile name="0000400c" startpos="1636082" endpos="1641801" />
+	</file>
+	<file name="mp_backlot.gsc" size="1365">
+		<datafile name="0000400c" startpos="1641838" endpos="1642202" />
+	</file>
+	<file name="mp_bloc.gsc" size="1624">
+		<datafile name="0000400c" startpos="1643236" endpos="1644859" />
+	</file>
+	<file name="mp_citystreets.gsc" size="2723">
+		<datafile name="0000400c" startpos="1644900" endpos="1647622" />
+	</file>
+	<file name="mp_convoy.gsc" size="1609">
+		<datafile name="0000400c" startpos="1647658" endpos="1649266" />
+	</file>
+	<file name="mp_crash.gsc" size="1372">
+		<datafile name="0000400c" startpos="1649301" endpos="1650672" />
+	</file>
+	<file name="mp_overgrown.gsc" size="2344">
+		<datafile name="0000400c" startpos="1650711" endpos="1653054" />
+	</file>
+	<file name="_class.gsc" size="48236">
+		<datafile name="0000400c" startpos="1132029" endpos="1180264" />
+	</file>
+	<file name="_hardpoints.gsc" size="35786">
+		<datafile name="0000400c" startpos="1338324" endpos="1374109" />
+	</file>
+	<file name="sd.gsc" size="27297">
+		<datafile name="0000400c" startpos="1608746" endpos="1636042" />
+	</file>
+	<file name="koth.gsc" size="24333">
+		<datafile name="0000400c" startpos="1559381" endpos="1583713" />
+	</file>
+	<file name="sab.gsc" size="24955">
+		<datafile name="0000400c" startpos="1583753" endpos="1608707" />
+	</file>
+</profile>
+
+
+

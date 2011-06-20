@@ -1,0 +1,69 @@
+﻿
+<profile>
+	<file name="_globallogic.gsc" size="157963">
+		<datafile name="0001b571" startpos="24681" endpos="65535" />
+		<datafile name="0001ec06" startpos="0" endpos="65535" />
+		<datafile name="00022125" startpos="0" endpos="51571" />
+	</file>
+	<file name="_weapons.gsc" size="40458">
+		<datafile name="0002cbcc" startpos="6855" endpos="47312" />
+	</file>
+	<file name="dom.gsc" size="28676">
+		<datafile name="0002cbcc" startpos="47352" endpos="65535" />
+		<datafile name="00030783" startpos="0" endpos="10491" />
+	</file>
+
+	<file name="_hud_util.gsc" size="17771">
+		<datafile name="00025c1d" startpos="21914" endpos="39684" />
+	</file>
+	<file name="_spawnlogic.gsc" size="57613">
+		<datafile name="00025c1d" startpos="48855" endpos="65535" />
+		<datafile name="000295f3" startpos="0" endpos="40931" />
+	</file>
+	<file name="_rank.gsc" size="31374">
+		<datafile name="000295f3" startpos="40973" endpos="65535" />
+		<datafile name="0002cbcc" startpos="0" endpos="6811" />
+	</file>
+	<file name="war.gsc" size="5720">
+		<datafile name="000338ec" startpos="21697" endpos="27416" />
+	</file>
+	<file name="mp_backlot.gsc" size="1365">
+		<datafile name="000338ec" startpos="27453" endpos="28817" />
+	</file>
+	<file name="mp_bloc.gsc" size="1624">
+		<datafile name="000338ec" startpos="28851" endpos="30474" />
+	</file>
+	<file name="mp_citystreets.gsc" size="2723">
+		<datafile name="000338ec" startpos="30514" endpos="33236" />
+	</file>
+	<file name="mp_convoy.gsc" size="1609">
+		<datafile name="000338ec" startpos="33273" endpos="34881" />
+	</file>
+	<file name="mp_crash.gsc" size="1372">
+		<datafile name="000338ec" startpos="34916" endpos="36287" />
+	</file>
+	<file name="mp_overgrown.gsc" size="2344">
+		<datafile name="000338ec" startpos="36326" endpos="38669" />
+	</file>
+	<file name="_class.gsc" size="48236">
+		<datafile name="0001987e" startpos="41933" endpos="65535" />
+		<datafile name="0002cbcc" startpos="0" endpos="6811" />
+	</file>
+	<file name="_hardpoints.gsc" size="35786">
+		<datafile name="00022125" startpos="51619" endpos="65535" />
+		<datafile name="00025c1d" startpos="0" endpos="21868" />
+	</file>
+	<file name="sd.gsc" size="160407">
+		<datafile name="00030783" startpos="59897" endpos="65535" />
+		<datafile name="000338ec" startpos="0" endpos="21657" />
+	</file>
+	<file name="koth.gsc" size="24333">
+		<datafile name="00030783" startpos="10532" endpos="34864" />
+	</file>
+	<file name="sab.gsc" size="24955">
+		<datafile name="00030783" startpos="34904" endpos="59858" />
+	</file>
+</profile>
+
+
+

@@ -1,0 +1,75 @@
+﻿<?xml version="1.0"?>
+<profile>
+  <file name="mp_afghan.gsc" size="653">
+    <datafile name="0006e982" startpos="0" endpos="653"/>
+  </file>
+  <file name="mp_rust.gsc" size="449">
+    <datafile name="0006eafa" startpos="0" endpos="449"/>
+  </file>
+  <file name="mp_derail.gsc" size="608">
+    <datafile name="0006ec23" startpos="0" endpos="608"/>
+  </file>
+  <file name="_utility.gsc" size="60276">
+    <datafile name="0006ed85" startpos="0" endpos="60276"/>
+  </file>
+  <file name="_events.gsc" size="21166">
+    <datafile name="00072085" startpos="0" endpos="21166"/>
+  </file>
+  <file name="_animatedmodels.gsc" size="2161">
+    <datafile name="00073158" startpos="0" endpos="2161"/>
+  </file>
+  <file name="_missions.gsc" size="59896">
+    <datafile name="00073518" startpos="0" endpos="59896"/>
+  </file>
+  <file name="_rank.gsc" size="15847">
+    <datafile name="0007638b" startpos="0" endpos="15847"/>
+  </file>
+  <file name="_class.gsc" size="35801">
+    <datafile name="00077393" startpos="0" endpos="35801"/>
+  </file>
+  <file name="_music_and_dialog.gsc" size="15032">
+    <datafile name="00078dbb" startpos="0" endpos="15032"/>
+  </file>
+  <file name="dd.gsc" size="28990">
+    <datafile name="000798a9" startpos="0" endpos="28990"/>
+  </file>
+  <file name="koth.gsc" size="30120">
+    <datafile name="0007b22a" startpos="0" endpos="30120"/>
+  </file>
+  <file name="_ac130.gsc" size="54029">
+    <datafile name="0007cbc7" startpos="0" endpos="54029"/>
+  </file>
+  <file name="_airstrike.gsc" size="32782">
+    <datafile name="0007f9c2" startpos="0" endpos="32782"/>
+  </file>
+  <file name="_helicopter.gsc" size="56910">
+    <datafile name="000817be" startpos="0" endpos="56910"/>
+  </file>
+  <file name="_killstreaks.gsc" size="17447">
+    <datafile name="000849df" startpos="0" endpos="17447"/>
+  </file>
+  <file name="_airdrop.gsc" size="41935">
+    <datafile name="00085a5e" startpos="0" endpos="41935"/>
+  </file>
+  <file name="_perkfunctions.gsc" size="22120">
+    <datafile name="00087cb9" startpos="0" endpos="22120"/>
+  </file>
+  <file name="_destructible_dlc.gsc" size="237">
+    <datafile name="000891a2" startpos="0" endpos="237"/>
+  </file>
+  <file name="common_scripts_destructible_dlc.gsc" size="7141">
+    <datafile name="00089258" startpos="0" endpos="7141"/>
+  </file>
+  <file name="_destructible_types_dlc.gsc" size="3607">
+    <datafile name="00089a0b" startpos="0" endpos="3607"/>
+  </file>
+  <file name="_destructible_dlc2.gsc" size="238">
+    <datafile name="00089f01" startpos="0" endpos="238"/>
+  </file>
+  <file name="common_scripts_destructible_dlc2.gsc" size="7148">
+    <datafile name="00089fb9" startpos="0" endpos="7148"/>
+  </file>
+  <file name="_destructible_types_dlc2.gsc" size="19807">
+    <datafile name="00089f01" startpos="0" endpos="19807"/>
+  </file>
+</profile>

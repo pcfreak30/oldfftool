@@ -1,0 +1,90 @@
+
+<profile>
+	<file name="_dogs.gsc" size="31193">
+		<datafile name="0003a051" startpos="36652" endpos="65535" />
+		<datafile name="00042dd7" startpos="0" endpos="2308" />
+	</file>
+	<file name="_laststand.gsc" size="19325">
+		<datafile name="00042dd7" startpos="2345" endpos="21670" />
+	</file>
+	<file name="_vehicles.gsc" size="54749">
+		<datafile name="00042dd7" startpos="21705" endpos="65535" />
+		<datafile name="0004778f" startpos="0" endpos="10918" />
+	</file>
+	<file name="_class.gsc" size="59421">
+		<datafile name="0004778f" startpos="10960" endpos="65535" />
+		<datafile name="0004bba5" startpos="0" endpos="4845" />
+	</file>
+	<file name="_gameobjects.gsc" size="50422">
+		<datafile name="0004bba5" startpos="4893" endpos="55315" />
+	</file>
+	<file name="_globallogic.gsc" size="212106">
+		<datafile name="0004bba5" startpos="55363" endpos="65535" />
+		<datafile name="000500d2" startpos="0" endpos="65535" />
+		<datafile name="0005419a" startpos="0" endpos="65535" />
+		<datafile name="00058925" startpos="0" endpos="65535" />
+		<datafile name="0005caf3" startpos="0" endpos="5325" />
+	</file>
+	<file name="_hardpoints.gsc" size="52692">
+		<datafile name="0005caf3" startpos="5372" endpos="58064" />
+	</file>
+	<file name="_missions.gsc" size="50057">
+		<datafile name="0005caf3" startpos="58109" endpos="65535" />
+		<datafile name="00061530" startpos="0" endpos="42630" />
+	</file>
+	<file name="_rank.gsc" size="35147">
+		<datafile name="00061530" startpos="42671" endpos="65535" />
+		<datafile name="000654ed" startpos="0" endpos="12282" />
+	</file>
+	<file name="_scoreboard.gsc" size="1581">
+		<datafile name="000654ed" startpos="12329" endpos="13910" />
+	</file>
+	<file name="_spawning.gsc" size="49181">
+		<datafile name="000654ed" startpos="13955" endpos="63136" />
+	</file>
+	<file name="_squad.gsc" size="8700">
+		<datafile name="000654ed" startpos="63178" endpos="65535" />
+		<datafile name="000654ed" startpos="0" endpos="6342" />
+	</file>
+	<file name="_teams.gsc" size="19586">
+		<datafile name="000654ed" startpos="6384" endpos="25970" />
+	</file>
+	<file name="_tweakables.gsc" size="11526">
+		<datafile name="000654ed" startpos="26017" endpos="37543" />
+	</file>
+	<file name="_weapons.gsc" size="49075">
+		<datafile name="000654ed" startpos="37587" endpos="65535" />
+		<datafile name="0006d253" startpos="0" endpos="21126" />
+	</file>
+	<file name="ctf.gsc" size="37915">
+		<datafile name="0006d253" startpos="21165" endpos="59080" />
+	</file>
+	<file name="sd.gsc" size="31508">
+		<datafile name="0006d253" startpos="59118" endpos="65535" />
+		<datafile name="00071828" startpos="0" endpos="25090" />
+	</file>
+	<file name="twar.gsc" size="92832">
+		<datafile name="00071828" startpos="25130" endpos="65535" />
+		<datafile name="00075b0a" startpos="0" endpos="65535" />
+		<datafile name="00079fb6" startpos="0" endpos="1171" />
+	</file>
+	<file name="jump_down_96.gsc" size="115">
+		<datafile name="00079fb6" startpos="1230" endpos="1345" />
+	</file>
+	<file name="jumpdown_96.gsc" size="808">
+		<datafile name="00079fb6" startpos="1403" endpos="2211" />
+	</file>
+	<file name="shared.gsc" size="4626">
+		<datafile name="00079fb6" startpos="2264" endpos="6890" />
+	</file>
+	<file name="_load.gsc" size="24190">
+		<datafile name="00079fb6" startpos="6921" endpos="31111" />
+	</file>
+	<file name="_createfx.gsc" size="31508">
+		<datafile name="00079fb6" startpos="31146" endpos="65535" />
+		<datafile name="0007e676" startpos="0" endpos="19730" />
+	</file>
+</profile>
+
+
+
