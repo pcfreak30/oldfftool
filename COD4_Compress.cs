@@ -36,7 +36,7 @@ namespace ffManager
                 Console.WriteLine("Processing " + file.Attributes["name"].Value);
                 foreach(XmlNode part in file.ChildNodes)
                 {
-                    if(!process_files.Contains(part.Attributes["name"]))
+                    if(!process_files.Contains(part.Attributes["name"].Value))
                     {
                         string source = locateDumpFile(part.Attributes["name"].Value);
                         if(source == "")
@@ -62,10 +62,11 @@ namespace ffManager
                         {
                             ps.StartInfo.FileName = "wine";
                             ps.StartInfo.Arguments = "./packzip.exe -o 0x" + part.Attributes["name"].Value + " " + comp + @" """ + dumpDir + DS + source + @""" " + @"""" + fastfile + @"""";
-                        }			
+                        }
+						Console.WriteLine(ps.StartInfo.FileName + " " + ps.StartInfo.Arguments);
                         ps.Start();
                         ps.WaitForExit();
-			process_files.Add(part.Attributes["name"]);
+						process_files.Add(part.Attributes["name"].Value);
                     }
                 }
             }
@@ -121,34 +122,10 @@ namespace ffManager
             }
             long spos = Convert.ToInt64(part.Attributes["startpos"].Value);
             long epos = Convert.ToInt64(part.Attributes["endpos"].Value);
-           // BinaryReader source_fhandle = new BinaryReader(File.OpenRead(dumpDir + DS + source));
 	 BinaryReader file_fhandle = new BinaryReader(File.OpenRead(extractDir + DS + file));
             BinaryWriter source_fhandle = new BinaryWriter(File.OpenWrite(dumpDir + DS + source));
-            //BinaryWriter temp_handle = new BinaryWriter(File.OpenWrite(dumpDir + DS + "temp.dat"));
             long size = epos -  spos;
             long len = 0;
-            /*try
-            {
-                while(len <= spos)
-                {
-                    temp_handle.BaseStream.WriteByte(source_fhandle.ReadByte());
-                    len++;
-                }
-                len = 0;
-                file_fhandle.BaseStream.Seek(foffset,SeekOrigin.Begin);
-                while(len <= size)
-                {
-                    temp_handle.BaseStream.WriteByte(file_fhandle.ReadByte());
-                    len++;
-                }
-                source_fhandle.BaseStream.Seek(epos,SeekOrigin.Begin);
-                while(source_fhandle.BaseStream.Position <= source_fhandle.BaseStream.Length)
-                {
-                    temp_handle.BaseStream.WriteByte(source_fhandle.ReadByte());
-                    len++;
-                }
-            }
-            */
 		try
             {
 		source_fhandle.BaseStream.Seek(spos,SeekOrigin.Begin);
@@ -163,13 +140,9 @@ namespace ffManager
             {
                 source_fhandle.Close();
                 file_fhandle.Close();
-               // temp_handle.Close();
             }
             source_fhandle.Close();
             file_fhandle.Close();
-           // temp_handle.Close();
-           // File.Copy(dumpDir + DS + "temp.dat", dumpDir + DS + source, true);
-           // File.Delete(dumpDir + DS + "temp.dat");
         }
         private long checkSize(string file, long size)
         {

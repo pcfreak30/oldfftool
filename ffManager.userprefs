@@ -1,29 +1,10 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" ctype="Workspace" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="ffManager/decompress_xbox.cs" ctype="Workbench">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Release|x86" ctype="Workspace" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="COD4_Compress.cs" ctype="Workbench">
     <Files>
-      <File FileName="ffManager/Main.cs" Line="1" Column="1" />
-      <File FileName="ffManager/ffInfo.cs" Line="22" Column="5" />
-      <File FileName="ffManager/compress_xbox.cs" Line="16" Column="1" />
-      <File FileName="ffManager/MainWindow.cs" Line="222" Column="4" />
-      <File FileName="ffManager/decompress_ps3.cs" Line="104" Column="8" />
-      <File FileName="ffManager/ffProfile.cs" Line="21" Column="7" />
-      <File FileName="ffManager/decompress_xbox.cs" Line="72" Column="33" />
+      <File FileName="Main.cs" Line="293" Column="8" />
+      <File FileName="COD4_Compress.cs" Line="1" Column="1" />
     </Files>
-    <Pads>
-      <Pad Id="ProjectPad">
-        <State expanded="True">
-          <Node name="ffManager" expanded="True">
-            <Node name="UserInterface" expanded="True">
-              <Node name="MainWindow">
-                <Option id="ShowAllFiles" value="True" />
-              </Node>
-            </Node>
-            <Node name="decompress_xbox.cs" selected="True" />
-          </Node>
-        </State>
-      </Pad>
-    </Pads>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />

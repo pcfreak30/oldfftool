@@ -54,6 +54,7 @@ namespace ffManager
 				ps.StartInfo.FileName = "wine";
 				ps.StartInfo.Arguments = "./offzip.exe -a " + decomp + @" """ + this.fastfile + @""" " + @"""" + this.dumpDir + @""" 0";
 			}
+			Console.WriteLine(ps.StartInfo.FileName + " " + ps.StartInfo.Arguments);
 			ps.Start();
 			ps.WaitForExit();
 			this.writeScripts();
@@ -65,6 +66,8 @@ namespace ffManager
 			foreach(XmlNode file in files)
 			{
 				Console.WriteLine("Processing " + file.Attributes["name"].Value);
+				if(!File.Exists(this.extractDir + this.DS + file))
+					File.WriteAllText(this.extractDir + this.DS +  file.Attributes["name"].Value,"");
 				extractData(file);
 				File.WriteAllText(this.extractDir + this.DS + file.Attributes["name"].Value + ".md5",MainClass.GetMD5HashFromFile(this.extractDir + this.DS + file.Attributes["name"].Value));
 			}
@@ -89,7 +92,7 @@ namespace ffManager
 				return;
 			}
 			long spos = Convert.ToInt64(part.Attributes["startpos"].Value);
-			long epos = Convert.ToInt64(part.Attributes["endpos"].Value);		
+			long epos = Convert.ToInt64(part.Attributes["endpos"].Value);
 			BinaryReader source_handle = new BinaryReader( File.OpenRead(this.dumpDir + this.DS + source));
 			BinaryWriter file_fhandle = new BinaryWriter( File.Open(this.extractDir + this.DS + file,FileMode.Append,FileAccess.Write));
 			source_handle.BaseStream.Seek(spos, SeekOrigin.Begin);
