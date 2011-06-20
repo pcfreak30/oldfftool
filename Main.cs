@@ -42,7 +42,7 @@ namespace ffManager
 			else
 				Console.WriteLine("2: Set the FastFile FFXML profile to use");
 			if(MainClass.console.Length > 0)
-				Console.WriteLine("3: Set the Console\n\t\tCurrent:" + MainClass.console);
+				Console.WriteLine("3: Set the Console\n\t\tCurrent:  " + MainClass.console);
 			else
 			Console.WriteLine("3: Set the Console");
 			Console.WriteLine("4: De-Compress the FastFile");
