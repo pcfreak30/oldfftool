@@ -457,14 +457,14 @@ namespace ffManager
 				return false;
 			if(MainClass.promptUpdate(version))
 			{
-				//try
-				//{
+				try
+				{
 				MainClass.doUpdate();
-				//}
-				//catch(Exception execp)
-				//{
-				//	return false;
-				//}
+				}
+				catch(Exception execp)
+				{
+					return false;
+				}
 				return true;
 			}
 			return false;			
