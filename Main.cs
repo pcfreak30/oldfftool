@@ -127,7 +127,6 @@ namespace ffManager
 				return false;
 			
 			BinaryReader binread = new BinaryReader( File.OpenRead(file));
-			string header =new string(binread.ReadChars(8)).ToLower();
 			binread.BaseStream.Seek(10,SeekOrigin.Begin);
 			byte[] verb = binread.ReadBytes(2);
 			binread.Close();
@@ -137,7 +136,8 @@ namespace ffManager
 				verba = verba + int.Parse(verb[i].ToString()).ToString();
 			}
 			int version = int.Parse(verba);
-			if(header != "iWff0100" && header != "iWffu100")
+			Console.WriteLine(header);
+			if(header != "iwff0100" && header != "iwffu100")
 			{
 				if(showError)
 				{

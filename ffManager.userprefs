@@ -1,12 +1,25 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Release|x86" ctype="Workspace" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="MW2_Decompress.cs" ctype="Workbench">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Main.cs" ctype="Workbench">
     <Files>
-      <File FileName="Main.cs" Line="293" Column="8" />
-      <File FileName="COD4_Compress.cs" Line="1" Column="1" />
-      <File FileName="AssemblyInfo.cs" Line="20" Column="32" />
-      <File FileName="MW2_Decompress.cs" Line="51" Column="5" />
+      <File FileName="Main.cs" Line="144" Column="44" />
+      <File FileName="COD4_Compress.cs" Line="166" Column="59" />
+      <File FileName="AssemblyInfo.cs" Line="20" Column="34" />
+      <File FileName="MW2_Decompress.cs" Line="76" Column="116" />
+      <File FileName="COD4_Decompress.cs" Line="74" Column="116" />
+      <File FileName="COD5_Decompress.cs" Line="74" Column="116" />
+      <File FileName="COD5_Compress.cs" Line="193" Column="59" />
+      <File FileName="MW2_Compress.cs" Line="90" Column="10" />
     </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State expanded="True">
+          <Node name="ffManager" expanded="True">
+            <Node name="Main.cs" selected="True" />
+          </Node>
+        </State>
+      </Pad>
+    </Pads>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />
