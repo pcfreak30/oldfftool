@@ -5,6 +5,8 @@ using System.Threading;
 using System.Text;
 using System.Collections;
 using System.Security.Cryptography;
+using System.Web;
+using System.Net;
 namespace ffManager
 {
 	class MainClass
@@ -16,6 +18,17 @@ namespace ffManager
 		private static string DS = ffManager.MainClass.getOS() == "win32" ? @"\" : "/";
 		public static void Main (string[] args)
 		{
+				string cwd_exe = System.Reflection.Assembly.GetExecutingAssembly().Location.ToString();
+				FileInfo exeinfo = new FileInfo(cwd_exe);
+				string cwd = exeinfo.Directory.FullName;
+				if(!File.Exists(cwd + MainClass.DS + "offzip.exe") || !File.Exists(cwd + MainClass.DS + "packzip.exe"))
+				{
+					Console.WriteLine("Opps, seems you are missing required files!");
+					Console.WriteLine("Please Re-Download ffManager from SimplyHacks.com...");
+					Console.WriteLine("Press Enter to Continue");
+					Console.Read();
+					return;
+				}
 			    Console.WriteLine("ffManager Tool\n");
     			Console.WriteLine("Version: " + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version + "\n");
 				Console.WriteLine("------------------------------\n");
@@ -44,7 +57,17 @@ namespace ffManager
 					if(isValidProfile(args[1]))
 						MainClass.profile = args[1];
 				}
-				MainClass.showOptions();
+				if(MainClass.checkForUpdate())
+				{
+					Console.WriteLine("Update Complete! Please re-run ffManager to use the new version");
+					Console.WriteLine("Thank You");
+					Console.WriteLine("Press ENTER to continue");
+					Console.Read();
+				}
+				else
+				{
+					MainClass.showOptions();
+				}
 		}
 		private static void showOptions()
 		{
@@ -127,6 +150,7 @@ namespace ffManager
 				return false;
 			
 			BinaryReader binread = new BinaryReader( File.OpenRead(file));
+			string header =new string(binread.ReadChars(8)).Trim().ToLower();
 			binread.BaseStream.Seek(10,SeekOrigin.Begin);
 			byte[] verb = binread.ReadBytes(2);
 			binread.Close();
@@ -410,6 +434,68 @@ namespace ffManager
 				sb.Append(retVal[i].ToString("x2"));
 			}
 			return sb.ToString();
+		}
+		private static bool checkForUpdate()
+		{
+			string version = "";
+			try
+			{
+			XmlTextReader reader = new XmlTextReader("http://www.simplyhacks.com/ffManager-version.xml");
+			reader.Read();
+			reader.MoveToContent();
+			while (!reader.EOF && reader.Name != "version")
+			{
+				reader.Read();
+			}
+			version = reader.ReadString();
+			}
+			catch(Exception execp)
+			{
+				return false;
+			}
+			if(version == System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString())
+				return false;
+			if(MainClass.promptUpdate(version))
+			{
+				//try
+				//{
+				MainClass.doUpdate();
+				//}
+				//catch(Exception execp)
+				//{
+				//	return false;
+				//}
+				return true;
+			}
+			return false;			
+		}
+		
+		private static bool promptUpdate(string version)
+		{
+			Console.Clear();
+			Console.WriteLine("**UPDATE NOTICE**");
+			Console.WriteLine("The latest version of ffManager is " + version + "..You have version "+ System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString() + "\n Would you like to update? YES or NO: ");
+			string answer = Console.ReadLine().Trim().ToLower();
+			if(answer == "yes")
+			  	return true;
+			else if(answer == "no")
+				return false;
+			else
+				return MainClass.promptUpdate(version);
+		}
+		
+		private static void doUpdate()
+		{
+			Console.Clear();
+			string updateFile = "." + MainClass.DS + "ffManager-updated.exe";
+			string origFile = "." + MainClass.DS + "ffManager.exe";
+			if(File.Exists(updateFile))
+			   File.Delete(updateFile);
+			WebClient req = new WebClient();
+			req.DownloadFile("http://www.simplyhacks.com/ffManager.exe",updateFile);
+			if(File.Exists(origFile))
+			   File.Delete(origFile);
+			File.Move(updateFile,origFile);
 		}
 	}
 }
