@@ -71,7 +71,7 @@ namespace ffManager
 				if(!File.Exists(extractDir + DS + file))
 					File.WriteAllText(extractDir + DS +  file.Attributes["name"].Value,"");
 				extractData(file);
-				File.WriteAllText(extractDir + DS + file.Attributes["name"].Value + ".md5",MainClass.GetMD5HashFromFile(extractDir + DS + file.Attributes["name"].Value));
+				File.WriteAllText(hashDir + DS + file.Attributes["name"].Value + ".md5",MainClass.GetMD5HashFromFile(extractDir + DS + file.Attributes["name"].Value));
 			}
 		}
 		private void extractData(XmlNode data)

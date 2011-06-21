@@ -165,10 +165,10 @@ namespace ffManager
         private bool hasChanged(string file)
         {
 			string md5hash = MainClass.GetMD5HashFromFile(extractDir + DS + file);
-            if(md5hash != File.ReadAllText(extractDir + DS + file + ".md5").Trim())
+            if(md5hash != File.ReadAllText(hashDir + DS + file + ".md5").Trim())
             {
                 Console.WriteLine("File " + file + " has changed..");
-                File.WriteAllText(extractDir + DS + file + ".md5",md5hash);
+                File.WriteAllText(hashDir + DS + file + ".md5",md5hash);
                 return true;
             }
             else

@@ -1,9 +1,11 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Release|x86" ctype="Workspace" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="COD4_Compress.cs" ctype="Workbench">
+  <MonoDevelop.Ide.Workbench ActiveDocument="MW2_Decompress.cs" ctype="Workbench">
     <Files>
       <File FileName="Main.cs" Line="293" Column="8" />
       <File FileName="COD4_Compress.cs" Line="1" Column="1" />
+      <File FileName="AssemblyInfo.cs" Line="20" Column="32" />
+      <File FileName="MW2_Decompress.cs" Line="51" Column="5" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
