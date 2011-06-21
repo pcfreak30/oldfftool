@@ -5,7 +5,7 @@ using System.Diagnostics;
 using System.IO;
 namespace ffManager
 {
-	public class COD5_Decompress
+	public class MW2_Decompress
 	{
 		private ArrayList missing_files =  new ArrayList();
 		private string fastfile;
@@ -15,9 +15,9 @@ namespace ffManager
 		private string hashDir;
 		private string DS = ffManager.MainClass.getOS() == "win32" ? @"\" : "/";
 		private XmlDocument offsets;
-		public COD5_Decompress (string file, string console)
+		public MW2_Decompress (string file, string console)
 		{
-			this.fastfile = file;
+			fastfile = file;
 			this.console = console;
 		
 		}
@@ -50,15 +50,17 @@ namespace ffManager
 			if(ffManager.MainClass.getOS() == "win32")
 			{
 				ps.StartInfo.FileName = @".\offzip.exe";
-				ps.StartInfo.Arguments = "-a " + decomp + @" """ + fastfile + @""" " + @"""" + dumpDir + @""" 0";
+				ps.StartInfo.Arguments = "-a " + decomp + @" """ + fastfile + @""" " + @"""" + dir + @""" 0";
 			}
 			else if(ffManager.MainClass.getOS() == "unix")
 			{
 				ps.StartInfo.FileName = "wine";
-				ps.StartInfo.Arguments = "./offzip.exe -a " + decomp + @" """ + fastfile + @""" " + @"""" + dumpDir + @""" 0";
+				ps.StartInfo.Arguments = "./offzip.exe -a " + decomp + @" """ + fastfile + @""" " + @"""" + dir + @""" 0";
 			}
+			Console.WriteLine(ps.StartInfo.FileName + " " + ps.StartInfo.Arguments);
 			ps.Start();
 			ps.WaitForExit();
+			decompressDump(dir);
 			writeScripts();
 		}
 		
@@ -68,8 +70,10 @@ namespace ffManager
 			foreach(XmlNode file in files)
 			{
 				Console.WriteLine("Processing " + file.Attributes["name"].Value);
+				if(!File.Exists(extractDir + DS + file))
+					File.WriteAllText(extractDir + DS +  file.Attributes["name"].Value,"");
 				extractData(file);
-				File.WriteAllText(hashDir + DS + file.Attributes["name"].Value + ".md5",MainClass.GetMD5HashFromFile(hashDir + DS + file.Attributes["name"].Value));
+				File.WriteAllText(extractDir + DS + file.Attributes["name"].Value + ".md5",MainClass.GetMD5HashFromFile(extractDir + DS + file.Attributes["name"].Value));
 			}
 		}
 		private void extractData(XmlNode data)
@@ -92,7 +96,7 @@ namespace ffManager
 				return;
 			}
 			long spos = Convert.ToInt64(part.Attributes["startpos"].Value);
-			long epos = Convert.ToInt64(part.Attributes["endpos"].Value);		
+			long epos = Convert.ToInt64(part.Attributes["endpos"].Value);
 			BinaryReader source_handle = new BinaryReader( File.OpenRead(dumpDir + DS + source));
 			BinaryWriter file_fhandle = new BinaryWriter( File.Open(extractDir + DS + file,FileMode.Append,FileAccess.Write));
 			source_handle.BaseStream.Seek(spos, SeekOrigin.Begin);
@@ -129,6 +133,45 @@ namespace ffManager
 		public ArrayList getMissingFiles()
 		{
 			return missing_files;
+		}
+		private void decompressDump(string dir)
+		{
+			DirectoryInfo dirinfo = new DirectoryInfo(dir);
+			string cdumpfile = "";
+			long cdumpfilesize = 0;
+			foreach(FileInfo file in dirinfo.GetFiles())
+			{
+				if(file.Length > cdumpfilesize)
+				{
+					cdumpfile = file.Name;
+					cdumpfilesize = file.Length;
+				}
+			}
+			Process ps = new Process();
+			ps.StartInfo.CreateNoWindow = true;
+			ps.StartInfo.WindowStyle= ProcessWindowStyle.Hidden;
+			string decomp = "";
+			if(ffManager.MainClass.console == "ps3")
+			{
+				decomp = "-z -15";
+			}
+			else if(ffManager.MainClass.console == "xbox")
+			{
+				decomp = "";
+			}
+			if(ffManager.MainClass.getOS() == "win32")
+			{
+				ps.StartInfo.FileName = @".\offzip.exe";
+				ps.StartInfo.Arguments = "-a " + decomp + @" """ + dir + DS + cdumpfile + @""" " + @"""" + dumpDir + @""" 0";
+			}
+			else if(ffManager.MainClass.getOS() == "unix")
+			{
+				ps.StartInfo.FileName = "wine";
+				ps.StartInfo.Arguments = "./offzip.exe -a " + decomp + @" """ + dir + DS + cdumpfile + @""" " + @"""" + dumpDir + @""" 0";
+			}
+			Console.WriteLine(ps.StartInfo.FileName + " " + ps.StartInfo.Arguments);
+			ps.Start();
+			ps.WaitForExit();
 		}
 	}
 }

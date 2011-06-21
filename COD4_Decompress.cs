@@ -12,26 +12,28 @@ namespace ffManager
 		private string console;
 		private string extractDir;
 		private string dumpDir;
+		private string hashDir;
 		private string DS = ffManager.MainClass.getOS() == "win32" ? @"\" : "/";
 		private XmlDocument offsets;
 		public COD4_Decompress (string file, string console)
 		{
-			this.fastfile = file;
+			fastfile = file;
 			this.console = console;
 		
 		}
 		
 		public void decompress(string dir, string xml)
 		{
-			this.offsets = new XmlDocument();
-			this.offsets.Load(xml);
+			offsets = new XmlDocument();
+			offsets.Load(xml);
 			if(Directory.Exists(dir)) Directory.Delete(dir,true);
-			this.extractDir = dir + this.DS + "scripts";
-			this.dumpDir = dir + this.DS + "raw";
+			extractDir = dir + DS + "scripts";
+			dumpDir = dir + DS + "raw";
+			hashDir = dir + DS + "hashes";
 			Directory.CreateDirectory(dir);
-			Directory.CreateDirectory(this.extractDir);
-			Directory.CreateDirectory(this.dumpDir);
-			
+			Directory.CreateDirectory(extractDir);
+			Directory.CreateDirectory(dumpDir);
+			Directory.CreateDirectory(hashDir);
 			Process ps = new Process();
 			ps.StartInfo.CreateNoWindow = true;
 			ps.StartInfo.WindowStyle= ProcessWindowStyle.Hidden;
@@ -47,29 +49,29 @@ namespace ffManager
 			if(ffManager.MainClass.getOS() == "win32")
 			{
 				ps.StartInfo.FileName = @".\offzip.exe";
-				ps.StartInfo.Arguments = "-a " + decomp + @" """ + this.fastfile + @""" " + @"""" + this.dumpDir + @""" 0";
+				ps.StartInfo.Arguments = "-a " + decomp + @" """ + fastfile + @""" " + @"""" + dumpDir + @""" 0";
 			}
 			else if(ffManager.MainClass.getOS() == "unix")
 			{
 				ps.StartInfo.FileName = "wine";
-				ps.StartInfo.Arguments = "./offzip.exe -a " + decomp + @" """ + this.fastfile + @""" " + @"""" + this.dumpDir + @""" 0";
+				ps.StartInfo.Arguments = "./offzip.exe -a " + decomp + @" """ + fastfile + @""" " + @"""" + dumpDir + @""" 0";
 			}
 			Console.WriteLine(ps.StartInfo.FileName + " " + ps.StartInfo.Arguments);
 			ps.Start();
 			ps.WaitForExit();
-			this.writeScripts();
+			writeScripts();
 		}
 		
 		private void writeScripts()
 		{
-			XmlNodeList files = this.offsets.GetElementsByTagName("file");
+			XmlNodeList files = offsets.GetElementsByTagName("file");
 			foreach(XmlNode file in files)
 			{
 				Console.WriteLine("Processing " + file.Attributes["name"].Value);
-				if(!File.Exists(this.extractDir + this.DS + file))
-					File.WriteAllText(this.extractDir + this.DS +  file.Attributes["name"].Value,"");
+				if(!File.Exists(extractDir + DS + file))
+					File.WriteAllText(extractDir + DS +  file.Attributes["name"].Value,"");
 				extractData(file);
-				File.WriteAllText(this.extractDir + this.DS + file.Attributes["name"].Value + ".md5",MainClass.GetMD5HashFromFile(this.extractDir + this.DS + file.Attributes["name"].Value));
+				File.WriteAllText(extractDir + DS + file.Attributes["name"].Value + ".md5",MainClass.GetMD5HashFromFile(extractDir + DS + file.Attributes["name"].Value));
 			}
 		}
 		private void extractData(XmlNode data)
@@ -82,7 +84,7 @@ namespace ffManager
 		}
 		private void extractPart(XmlNode part, string file)
 		{
-			string source = this.locateDumpFile(part.Attributes["name"].Value);
+			string source = locateDumpFile(part.Attributes["name"].Value);
 			if(source == "")
 			{
 				ArrayList data = new ArrayList();
@@ -93,8 +95,8 @@ namespace ffManager
 			}
 			long spos = Convert.ToInt64(part.Attributes["startpos"].Value);
 			long epos = Convert.ToInt64(part.Attributes["endpos"].Value);
-			BinaryReader source_handle = new BinaryReader( File.OpenRead(this.dumpDir + this.DS + source));
-			BinaryWriter file_fhandle = new BinaryWriter( File.Open(this.extractDir + this.DS + file,FileMode.Append,FileAccess.Write));
+			BinaryReader source_handle = new BinaryReader( File.OpenRead(dumpDir + DS + source));
+			BinaryWriter file_fhandle = new BinaryWriter( File.Open(extractDir + DS + file,FileMode.Append,FileAccess.Write));
 			source_handle.BaseStream.Seek(spos, SeekOrigin.Begin);
 			long size = epos - spos;
 			long len = 0;
@@ -118,7 +120,7 @@ namespace ffManager
 		}
 		private string locateDumpFile(string name)
 		{
-			DirectoryInfo files = new DirectoryInfo(this.dumpDir);
+			DirectoryInfo files = new DirectoryInfo(dumpDir);
 			foreach(FileInfo finfo in files.GetFiles())
 			{
 				if(finfo.Name.Replace(finfo.Extension,"") == name)
@@ -128,7 +130,7 @@ namespace ffManager
 		}
 		public ArrayList getMissingFiles()
 		{
-			return this.missing_files;
+			return missing_files;
 		}
 	}
 }

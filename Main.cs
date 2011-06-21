@@ -26,6 +26,24 @@ namespace ffManager
     			Console.WriteLine("------------------------------\n");
 				Thread.Sleep(3000);
 				Console.Clear();
+				if(args.Length == 1)
+				{
+					args[0] = args[0].Trim().Replace("'","").Replace(@"""","");
+					isValidFastFile(args[0], false);
+					if(isValidProfile(args[0]))
+						MainClass.profile = args[0];
+				}
+				if(args.Length == 2)
+				{
+					args[0] = args[0].Trim().Replace("'","").Replace(@"""","");
+					args[1] = args[1].Trim().Replace("'","").Replace(@"""","");
+					isValidFastFile(args[0], false);
+					isValidFastFile(args[1], false);
+					if(isValidProfile(args[0]))
+						MainClass.profile = args[0];
+					if(isValidProfile(args[1]))
+						MainClass.profile = args[1];
+				}
 				MainClass.showOptions();
 		}
 		private static void showOptions()
@@ -103,7 +121,7 @@ namespace ffManager
 			else
 				MainClass.promptFastFile();
 		}
-		private static bool isValidFastFile(string file)
+		private static bool isValidFastFile(string file, bool showError = true)
 		{
 			if(!File.Exists(file))
 				return false;
@@ -121,14 +139,20 @@ namespace ffManager
 			int version = int.Parse(verba);
 			if(header != "IWff0100" && header != "IWffu100")
 			{
-				Console.WriteLine("This is NOT a valid FastFile");
-				Thread.Sleep(2000);
+				if(showError)
+				{
+					Console.WriteLine("This is NOT a valid FastFile");
+					Thread.Sleep(2000);
+				}
 				return false;
 			}
 			else if(header == "IWffs100")
 			{
-				Console.WriteLine("ffManager does NOT support signed fastfiles");
-				Thread.Sleep(2000);
+				if(showError)
+				{
+					Console.WriteLine("ffManager does NOT support signed fastfiles");
+					Thread.Sleep(2000);
+				}
 				return false;
 			}
 			
@@ -256,6 +280,19 @@ namespace ffManager
 						}
 					}
 				}
+				else if(MainClass.ffversion == "mw2")
+				{	
+					MW2_Decompress cod = new MW2_Decompress(MainClass.fastfile,MainClass.console);
+					cod.decompress(dir, MainClass.profile);
+					ArrayList missing = cod.getMissingFiles();
+					if(missing.Count > 0)
+					{
+						foreach(ArrayList element in missing)
+						{
+							Console.WriteLine("Missing Data " + element[0] + " for file "+ element[1]);
+						}
+					}
+				}
 				Console.WriteLine("Press ENTER to continue back to program options..");
 				Console.ReadLine();
 				MainClass.showOptions();
@@ -298,6 +335,27 @@ namespace ffManager
 				else if(MainClass.ffversion == "cod5")
 				{	
 					COD5_Compress cod = new COD5_Compress(MainClass.fastfile,MainClass.console);
+					cod.compress(dir, MainClass.profile);
+					ArrayList missing = cod.getMissingFiles();
+					ArrayList overflow = cod.getOverflow();
+					if(missing.Count > 0)
+					{
+						foreach(ArrayList element in missing)
+						{
+							Console.WriteLine("Missing Data " + element[0] + " for file "+ element[1]);
+						}
+					}
+					if(overflow.Count > 0)
+					{
+						foreach(ArrayList element in  overflow )
+						{
+							Console.WriteLine("Overflow in " + element[0] + "! Max size is: "+ element[1] + " -- Overflow is: " + element[2]);
+						}
+					}
+				}
+				else if(MainClass.ffversion == "mw2")
+				{	
+					MW2_Compress cod = new MW2_Compress(MainClass.fastfile,MainClass.console);
 					cod.compress(dir, MainClass.profile);
 					ArrayList missing = cod.getMissingFiles();
 					ArrayList overflow = cod.getOverflow();

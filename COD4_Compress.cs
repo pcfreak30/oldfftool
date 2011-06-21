@@ -13,6 +13,7 @@ namespace ffManager
         private string console;
         private string extractDir;
         private string dumpDir;
+		private string hashDir;
         private ArrayList process_files = new ArrayList();
         private string DS = ffManager.MainClass.getOS() == "win32" ? @"\" : "/";
         private XmlDocument offsets;
@@ -27,6 +28,7 @@ namespace ffManager
             offsets.Load(xml);
             extractDir = dir + DS + "scripts";
             dumpDir = dir + DS + "raw";
+			hashDir = dir + DS + "hashes";
             packData();
             ArrayList process_files = new ArrayList();
             Console.WriteLine("Compressing " + fastfile);
@@ -176,7 +178,7 @@ namespace ffManager
         }
         private void fillPadding(string file, long num)
         {
-            BinaryWriter fhandle= new BinaryWriter(File.Open(this.extractDir + DS + file,FileMode.Append,FileAccess.Write));
+            BinaryWriter fhandle= new BinaryWriter(File.Open(extractDir + DS + file,FileMode.Append,FileAccess.Write));
             try
             {
                 for(long i=0; i < num; i++)
