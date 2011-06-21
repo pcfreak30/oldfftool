@@ -160,7 +160,6 @@ namespace ffManager
 				verba = verba + int.Parse(verb[i].ToString()).ToString();
 			}
 			int version = int.Parse(verba);
-			Console.WriteLine(header);
 			if(header != "iwff0100" && header != "iwffu100")
 			{
 				if(showError)
