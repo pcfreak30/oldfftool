@@ -16,12 +16,13 @@ namespace ffManager
 		public static string profile = "";
 		public static string console = "";
 		private static string DS = ffManager.MainClass.getOS() == "win32" ? @"\" : "/";
+		public static string cwd = "";
 		public static void Main (string[] args)
 		{
 				string cwd_exe = System.Reflection.Assembly.GetExecutingAssembly().Location.ToString();
 				FileInfo exeinfo = new FileInfo(cwd_exe);
-				string cwd = exeinfo.Directory.FullName;
-				if(!File.Exists(cwd + MainClass.DS + "offzip.exe") || !File.Exists(cwd + MainClass.DS + "packzip.exe"))
+				MainClass.cwd = exeinfo.Directory.FullName;
+				if(!File.Exists(MainClass.cwd + MainClass.DS + "offzip.exe") || !File.Exists(MainClass.cwd + MainClass.DS + "packzip.exe"))
 				{
 					Console.WriteLine("Opps, seems you are missing required files!");
 					Console.WriteLine("Please Re-Download ffManager from SimplyHacks.com...");

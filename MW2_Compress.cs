@@ -58,13 +58,13 @@ namespace ffManager
                         }
                         if(ffManager.MainClass.getOS() == "win32")
                         {
-                            ps.StartInfo.FileName = @".\packzip.exe";
+                            ps.StartInfo.FileName =MainClass.cwd + @"\packzip.exe";
                             ps.StartInfo.Arguments = "-o 0x" + part.Attributes["name"].Value + " " + comp + @" """ + dumpDir + DS + source + @""" " + @"""" + dir + DS + dump[0] + @"""";
                         }
                         else if(ffManager.MainClass.getOS() == "unix")
                         {
                             ps.StartInfo.FileName = "wine";
-                            ps.StartInfo.Arguments = "./packzip.exe -o 0x" + part.Attributes["name"].Value + " " + comp + @" """ + dumpDir + DS + source + @""" " + @"""" + dir + DS + dump[0] + @"""";
+                            ps.StartInfo.Arguments = @"""" + MainClass.cwd + @"/packzip.exe"" -o 0x" + part.Attributes["name"].Value + " " + comp + @" """ + dumpDir + DS + source + @""" " + @"""" + dir + DS + dump[0] + @"""";
                         }
 						Console.WriteLine(ps.StartInfo.FileName + " " + ps.StartInfo.Arguments);
                         ps.Start();
@@ -227,13 +227,13 @@ namespace ffManager
 				comp = "";
 			if(ffManager.MainClass.getOS() == "win32")
 			{
-				ps.StartInfo.FileName = @".\packzip.exe";
+				ps.StartInfo.FileName = MainClass.cwd  + @"\packzip.exe";
 				ps.StartInfo.Arguments = "-o 0x" + name + " " + comp + @" """ + dir + DS + filename + @""" " + @"""" + fastfile + @"""";
 			}
 			else if(ffManager.MainClass.getOS() == "unix")
 			{
 				ps.StartInfo.FileName = "wine";
-				ps.StartInfo.Arguments = "./packzip.exe -o 0x" + name + " " + comp + @" """ + dir + DS + filename + @""" " + @"""" + fastfile + @"""";
+				ps.StartInfo.Arguments = @"""" + MainClass.cwd + @"./packzip.exe"" -o 0x" + name + " " + comp + @" """ + dir + DS + filename + @""" " + @"""" + fastfile + @"""";
 			}
 			Console.WriteLine(ps.StartInfo.FileName + " " + ps.StartInfo.Arguments);
 			ps.Start();

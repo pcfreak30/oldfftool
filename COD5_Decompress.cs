@@ -49,14 +49,15 @@ namespace ffManager
 			}
 			if(ffManager.MainClass.getOS() == "win32")
 			{
-				ps.StartInfo.FileName = @".\offzip.exe";
+				ps.StartInfo.FileName = MainClass.cwd + @"\offzip.exe";
 				ps.StartInfo.Arguments = "-a " + decomp + @" """ + fastfile + @""" " + @"""" + dumpDir + @""" 0";
 			}
 			else if(ffManager.MainClass.getOS() == "unix")
 			{
 				ps.StartInfo.FileName = "wine";
-				ps.StartInfo.Arguments = "./offzip.exe -a " + decomp + @" """ + fastfile + @""" " + @"""" + dumpDir + @""" 0";
+				ps.StartInfo.Arguments = @"""" + MainClass.cwd + @"/offzip.exe"" -a " + decomp + @" """ + fastfile + @""" " + @"""" + dumpDir + @""" 0";
 			}
+			Console.WriteLine(ps.StartInfo.FileName + "  " + ps.StartInfo.Arguments);
 			ps.Start();
 			ps.WaitForExit();
 			writeScripts();
