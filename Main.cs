@@ -125,7 +125,7 @@ namespace ffManager
 			string file = Console.ReadLine().Trim().Replace("'","").Replace(@"""","");
 			if(file == "")
 				MainClass.showOptions();
-			if(MainClass.isValidFastFile(file))
+			if(MainClass.isValidFastFile(file, true))
 			{
 				switch(MainClass.ffversion)
 				{
@@ -145,7 +145,7 @@ namespace ffManager
 			else
 				MainClass.promptFastFile();
 		}
-		private static bool isValidFastFile(string file, bool showError = true)
+		private static bool isValidFastFile(string file, bool showError)
 		{
 			if(!File.Exists(file))
 				return false;
