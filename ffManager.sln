@@ -3,12 +3,20 @@ Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ffManager", "ffManager.csproj", "{F7F5BBF8-7F79-4861-AB9A-57A173B7163F}"
 EndProject
+Project("{9344bdbb-3e7f-41fc-a0dd-8665d75ee146}") = "Packages", "Packages.mdproj", "{3640D703-28EF-4571-859F-BF8EA314D64C}"
+EndProject
+Project("{9344bdbb-3e7f-41fc-a0dd-8665d75ee146}") = "Packages", "Packages.mdproj", "{E54C5FC9-7F0E-43A5-A0C3-408734248469}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3640D703-28EF-4571-859F-BF8EA314D64C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{3640D703-28EF-4571-859F-BF8EA314D64C}.Release|x86.ActiveCfg = Release|Any CPU
+		{E54C5FC9-7F0E-43A5-A0C3-408734248469}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{E54C5FC9-7F0E-43A5-A0C3-408734248469}.Release|x86.ActiveCfg = Release|Any CPU
 		{F7F5BBF8-7F79-4861-AB9A-57A173B7163F}.Debug|x86.ActiveCfg = Debug|x86
 		{F7F5BBF8-7F79-4861-AB9A-57A173B7163F}.Debug|x86.Build.0 = Debug|x86
 		{F7F5BBF8-7F79-4861-AB9A-57A173B7163F}.Release|x86.ActiveCfg = Release|x86

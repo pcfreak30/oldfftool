@@ -30,6 +30,8 @@ namespace ffManager
 					Console.Read();
 					return;
 				}
+				if(File.Exists("." + MainClass.DS + "ffManager-old.exe"))
+			   		File.Delete("." + MainClass.DS + "ffManager-old.exe");
 			    Console.WriteLine("ffManager Tool\n");
     			Console.WriteLine("Version: " + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version + "\n");
 				Console.WriteLine("------------------------------\n");
@@ -487,15 +489,13 @@ namespace ffManager
 		private static void doUpdate()
 		{
 			Console.Clear();
-			string updateFile = "." + MainClass.DS + "ffManager-updated.exe";
-			string origFile = "." + MainClass.DS + "ffManager.exe";
-			if(File.Exists(updateFile))
-			   File.Delete(updateFile);
-			WebClient req = new WebClient();
-			req.DownloadFile("http://www.simplyhacks.com/ffManager.exe",updateFile);
+			string updateFile = "." + MainClass.DS + "ffManager.exe";
+			string origFile = "." + MainClass.DS + "ffManager-old.exe";
 			if(File.Exists(origFile))
 			   File.Delete(origFile);
-			File.Move(updateFile,origFile);
+			File.Move(updateFile, origFile);
+			WebClient req = new WebClient();
+			req.DownloadFile("http://www.simplyhacks.com/ffManager.exe",updateFile);
 		}
 	}
 }
