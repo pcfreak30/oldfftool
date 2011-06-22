@@ -65,7 +65,6 @@ namespace ffManager
                             ps.StartInfo.FileName = "wine";
                             ps.StartInfo.Arguments = @"""" + MainClass.cwd + @"/packzip.exe"" -o 0x" + part.Attributes["name"].Value + " " + comp + @" """ + dumpDir + DS + source + @""" " + @"""" + fastfile + @"""";
                         }
-						Console.WriteLine(ps.StartInfo.FileName + " " + ps.StartInfo.Arguments);
                         ps.Start();
                         ps.WaitForExit();
 						process_files.Add(part.Attributes["name"].Value);

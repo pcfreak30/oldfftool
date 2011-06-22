@@ -57,7 +57,6 @@ namespace ffManager
 				ps.StartInfo.FileName = "wine";
 				ps.StartInfo.Arguments =@""""+ MainClass.cwd + @"/offzip.exe"" -a " + decomp + @" """ + fastfile + @""" " + @"""" + dir + @""" 0";
 			}
-			Console.WriteLine(ps.StartInfo.FileName + " " + ps.StartInfo.Arguments);
 			ps.Start();
 			ps.WaitForExit();
 			decompressDump(dir);

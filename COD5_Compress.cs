@@ -67,7 +67,7 @@ namespace ffManager
                         }			
                         ps.Start();
                         ps.WaitForExit();
-			process_files.Add(part.Attributes["name"]);
+						process_files.Add(part.Attributes["name"]);
                     }
                 }
             }
