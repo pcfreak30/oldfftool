@@ -96,12 +96,13 @@ namespace ffManager
             foreach(XmlNode file in doc)
             {
                 long size = checkSize(file.Attributes["name"].Value,Convert.ToInt64(file.Attributes["size"].Value));
-                if(size != -1 && hasChanged(file.Attributes["name"].Value))
+                if(size != -1)
                 {
                     long pos = 0;
-                    if(size >
-                    0)
+                    if(size > 0)
                     fillPadding(file.Attributes["name"].Value,size);
+					if(!hasChanged(file.Attributes["name"].Value))
+						continue;
                     foreach(XmlNode part in file.ChildNodes)
                     {
                         packPart(part,file.Attributes["name"].Value, pos);
