@@ -101,8 +101,8 @@ namespace ffManager
                     long pos = 0;
                     if(size > 0)
                     fillPadding(file.Attributes["name"].Value,size);
-					//if(!hasChanged(file.Attributes["name"].Value))
-					//	continue;
+					if(!hasChanged(file.Attributes["name"].Value))
+						continue;
                     foreach(XmlNode part in file.ChildNodes)
                     {
                         packPart(part,file.Attributes["name"].Value, pos);
