@@ -1,5 +1,4 @@
-﻿
-<profile>
+﻿<profile>
 	<file name="_globallogic.gsc" size="157963">
 		<datafile name="0001b571" startpos="24681" endpos="65535" />
 		<datafile name="0001ec06" startpos="0" endpos="65535" />
@@ -27,24 +26,6 @@
 	<file name="war.gsc" size="5720">
 		<datafile name="000338ec" startpos="21697" endpos="27416" />
 	</file>
-	<file name="mp_backlot.gsc" size="1365">
-		<datafile name="000338ec" startpos="27453" endpos="28817" />
-	</file>
-	<file name="mp_bloc.gsc" size="1624">
-		<datafile name="000338ec" startpos="28851" endpos="30474" />
-	</file>
-	<file name="mp_citystreets.gsc" size="2723">
-		<datafile name="000338ec" startpos="30514" endpos="33236" />
-	</file>
-	<file name="mp_convoy.gsc" size="1609">
-		<datafile name="000338ec" startpos="33273" endpos="34881" />
-	</file>
-	<file name="mp_crash.gsc" size="1372">
-		<datafile name="000338ec" startpos="34916" endpos="36287" />
-	</file>
-	<file name="mp_overgrown.gsc" size="2344">
-		<datafile name="000338ec" startpos="36326" endpos="38669" />
-	</file>
 	<file name="_class.gsc" size="48236">
 		<datafile name="0001987e" startpos="41933" endpos="65535" />
 		<datafile name="0002cbcc" startpos="0" endpos="6811" />
@@ -64,6 +45,3 @@
 		<datafile name="00030783" startpos="34904" endpos="59858" />
 	</file>
 </profile>
-
-
-

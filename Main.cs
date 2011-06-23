@@ -31,7 +31,10 @@ namespace ffManager
 					return;
 				}
 				if(File.Exists("." + MainClass.DS + "ffManager-old.exe"))
+				{
+					Thread.Sleep(700);
 			   		File.Delete("." + MainClass.DS + "ffManager-old.exe");
+				}
 			    Console.WriteLine("ffManager Tool\n");
     			Console.WriteLine("Version: " + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version + "\n");
 				Console.WriteLine("------------------------------\n");
@@ -61,11 +64,16 @@ namespace ffManager
 						MainClass.profile = args[1];
 				}
 				if(MainClass.checkForUpdate())
-				{
+				{/*
 					Console.WriteLine("Update Complete! Please re-run ffManager to use the new version");
 					Console.WriteLine("Thank You");
 					Console.WriteLine("Press ENTER to continue");
 					Console.Read();
+					*/
+					System.Diagnostics.Process p = new System.Diagnostics.Process();
+					p.StartInfo.FileName=MainClass.cwd + MainClass.DS + "ffManager.exe";
+					p.Start();
+					return;
 				}
 				else
 				{

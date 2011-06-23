@@ -1,22 +1,24 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Release|x86" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Main.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="COD4_Decompress.cs">
     <Files>
-      <File FileName="Main.cs" Line="469" Column="5" />
-      <File FileName="COD4_Compress.cs" Line="166" Column="59" />
-      <File FileName="AssemblyInfo.cs" Line="23" Column="78" />
-      <File FileName="MW2_Decompress.cs" Line="76" Column="116" />
-      <File FileName="COD4_Decompress.cs" Line="74" Column="116" />
-      <File FileName="COD5_Decompress.cs" Line="74" Column="116" />
-      <File FileName="COD5_Compress.cs" Line="193" Column="59" />
-      <File FileName="MW2_Compress.cs" Line="90" Column="10" />
+      <File FileName="Main.cs" Line="18" Column="34" />
+      <File FileName="COD4_Compress.cs" Line="100" Column="18" />
+      <File FileName="AssemblyInfo.cs" Line="20" Column="34" />
+      <File FileName="MW2_Decompress.cs" Line="60" Column="1" />
+      <File FileName="COD4_Decompress.cs" Line="60" Column="20" />
+      <File FileName="COD5_Decompress.cs" Line="60" Column="1" />
+      <File FileName="COD5_Compress.cs" Line="105" Column="16" />
+      <File FileName="MW2_Compress.cs" Line="106" Column="16" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State expanded="True">
           <Node name="ffManager" expanded="True">
-            <Node name="Main.cs" selected="True" />
+            <Node name="COD4_Decompress.cs" selected="True" />
           </Node>
+          <Node name="Packages" expanded="True" />
+          <Node name="Packages" expanded="True" />
         </State>
       </Pad>
     </Pads>
