@@ -14,6 +14,7 @@ namespace ffManager
         private string extractDir;
         private string dumpDir;
 		private string hashDir;
+		private string tempDir;
         private ArrayList process_files = new ArrayList();
         private string DS = ffManager.MainClass.getOS() == "win32" ? @"\" : "/";
         private XmlDocument offsets;
@@ -29,6 +30,7 @@ namespace ffManager
             extractDir = dir + DS + "scripts";
             dumpDir = dir + DS + "raw";
 			hashDir = dir + DS + "hashes";
+			tempDir = dir + DS + "temp";
             packData();
             ArrayList process_files = new ArrayList();
             Console.WriteLine("Compressing " + fastfile);
@@ -95,6 +97,8 @@ namespace ffManager
             XmlNodeList doc = offsets.GetElementsByTagName("file");
             foreach(XmlNode file in doc)
             {
+				if(File.Exists(tempDir + DS + file.Attributes["name"].Value)) File.Delete(tempDir + DS + file.Attributes["name"].Value);
+				File.Copy(extractDir + DS + file.Attributes["name"].Value,tempDir + DS + file.Attributes["name"].Value);
                 long size = checkSize(file.Attributes["name"].Value,Convert.ToInt64(file.Attributes["size"].Value));
                 if(size != -1)
                 {
@@ -124,7 +128,7 @@ namespace ffManager
             }
             long spos = Convert.ToInt64(part.Attributes["startpos"].Value);
             long epos = Convert.ToInt64(part.Attributes["endpos"].Value);
-	 BinaryReader file_fhandle = new BinaryReader(File.OpenRead(extractDir + DS + file));
+	 BinaryReader file_fhandle = new BinaryReader(File.OpenRead(tempDir + DS + file));
             BinaryWriter source_fhandle = new BinaryWriter(File.OpenWrite(dumpDir + DS + source));
             long size = epos -  spos;
             long len = 0;
@@ -148,7 +152,7 @@ namespace ffManager
         }
         private long checkSize(string file, long size)
         {
-            FileInfo finfo = new FileInfo(extractDir + DS + file);
+            FileInfo finfo = new FileInfo(tempDir + DS + file);
             if(finfo.Length > size)
             {
                 ArrayList data = new ArrayList();
@@ -178,7 +182,7 @@ namespace ffManager
         }
         private void fillPadding(string file, long num)
         {
-            BinaryWriter fhandle= new BinaryWriter(File.Open(extractDir + DS + file,FileMode.Append,FileAccess.Write));
+            BinaryWriter fhandle= new BinaryWriter(File.Open(tempDir + DS + file,FileMode.Append,FileAccess.Write));
             try
             {
                 for(long i=0; i < num; i++)

@@ -21,24 +21,6 @@
 	<file name="war.gsc" size="5720">
 		<datafile name="0000400c" startpos="1636082" endpos="1641801" />
 	</file>
-	<file name="mp_backlot.gsc" size="1365">
-		<datafile name="0000400c" startpos="1641838" endpos="1642202" />
-	</file>
-	<file name="mp_bloc.gsc" size="1624">
-		<datafile name="0000400c" startpos="1643236" endpos="1644859" />
-	</file>
-	<file name="mp_citystreets.gsc" size="2723">
-		<datafile name="0000400c" startpos="1644900" endpos="1647622" />
-	</file>
-	<file name="mp_convoy.gsc" size="1609">
-		<datafile name="0000400c" startpos="1647658" endpos="1649266" />
-	</file>
-	<file name="mp_crash.gsc" size="1372">
-		<datafile name="0000400c" startpos="1649301" endpos="1650672" />
-	</file>
-	<file name="mp_overgrown.gsc" size="2344">
-		<datafile name="0000400c" startpos="1650711" endpos="1653054" />
-	</file>
 	<file name="_class.gsc" size="48236">
 		<datafile name="0000400c" startpos="1132029" endpos="1180264" />
 	</file>

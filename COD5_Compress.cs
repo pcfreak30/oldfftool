@@ -14,6 +14,7 @@ namespace ffManager
         private string extractDir;
         private string dumpDir;
 		private string hashDir;
+		private string tempDir;
         private ArrayList process_files = new ArrayList();
         private string DS = ffManager.MainClass.getOS() == "win32" ? @"\" : "/";
         private XmlDocument offsets;
@@ -29,6 +30,7 @@ namespace ffManager
             extractDir = dir + DS + "scripts";
             dumpDir = dir + DS + "raw";
 			hashDir = dir + DS + "hashes";
+			tempDir = dir + DS + "temp";
             packData();
             ArrayList process_files = new ArrayList();
             Console.WriteLine("Compressing " + fastfile);
@@ -95,6 +97,8 @@ namespace ffManager
             XmlNodeList doc = offsets.GetElementsByTagName("file");
             foreach(XmlNode file in doc)
             {
+				if(!File.Exists(extractDir + DS + file))
+					File.WriteAllText(extractDir + DS +  file.Attributes["name"].Value,"");
                 long size = checkSize(file.Attributes["name"].Value,Convert.ToInt64(file.Attributes["size"].Value));
                 if(size != -1)
                 {
@@ -124,34 +128,10 @@ namespace ffManager
             }
             long spos = Convert.ToInt64(part.Attributes["startpos"].Value);
             long epos = Convert.ToInt64(part.Attributes["endpos"].Value);
-           // BinaryReader source_fhandle = new BinaryReader(File.OpenRead(dumpDir + DS + source));
 	 BinaryReader file_fhandle = new BinaryReader(File.OpenRead(extractDir + DS + file));
             BinaryWriter source_fhandle = new BinaryWriter(File.OpenWrite(dumpDir + DS + source));
-            //BinaryWriter temp_handle = new BinaryWriter(File.OpenWrite(dumpDir + DS + "temp.dat"));
             long size = epos -  spos;
             long len = 0;
-            /*try
-            {
-                while(len <= spos)
-                {
-                    temp_handle.BaseStream.WriteByte(source_fhandle.ReadByte());
-                    len++;
-                }
-                len = 0;
-                file_fhandle.BaseStream.Seek(foffset,SeekOrigin.Begin);
-                while(len <= size)
-                {
-                    temp_handle.BaseStream.WriteByte(file_fhandle.ReadByte());
-                    len++;
-                }
-                source_fhandle.BaseStream.Seek(epos,SeekOrigin.Begin);
-                while(source_fhandle.BaseStream.Position <= source_fhandle.BaseStream.Length)
-                {
-                    temp_handle.BaseStream.WriteByte(source_fhandle.ReadByte());
-                    len++;
-                }
-            }
-            */
 		try
             {
 		source_fhandle.BaseStream.Seek(spos,SeekOrigin.Begin);
@@ -166,13 +146,9 @@ namespace ffManager
             {
                 source_fhandle.Close();
                 file_fhandle.Close();
-               // temp_handle.Close();
             }
             source_fhandle.Close();
             file_fhandle.Close();
-           // temp_handle.Close();
-           // File.Copy(dumpDir + DS + "temp.dat", dumpDir + DS + source, true);
-           // File.Delete(dumpDir + DS + "temp.dat");
         }
         private long checkSize(string file, long size)
         {
@@ -206,7 +182,7 @@ namespace ffManager
         }
         private void fillPadding(string file, long num)
         {
-            BinaryWriter fhandle= new BinaryWriter(File.Open(this.extractDir + DS + file,FileMode.Append,FileAccess.Write));
+            BinaryWriter fhandle= new BinaryWriter(File.Open(this.tempDir + DS + file,FileMode.Append,FileAccess.Write));
             try
             {
                 for(long i=0; i < num; i++)
