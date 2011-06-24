@@ -14,7 +14,6 @@ namespace ffManager
         private string extractDir;
         private string dumpDir;
 		private string hashDir;
-		private string tempDir;
         private ArrayList process_files = new ArrayList();
         private string DS = ffManager.MainClass.getOS() == "win32" ? @"\" : "/";
         private XmlDocument offsets;
@@ -30,7 +29,6 @@ namespace ffManager
             extractDir = dir + DS + "scripts";
             dumpDir = dir + DS + "raw";
 			hashDir = dir + DS + "hashes";
-			tempDir = dir + DS + "temp";
             packData();
             ArrayList process_files = new ArrayList();
             Console.WriteLine("Compressing " + fastfile);
@@ -98,21 +96,22 @@ namespace ffManager
             XmlNodeList doc = offsets.GetElementsByTagName("file");
             foreach(XmlNode file in doc)
             {
-				if(File.Exists(tempDir + DS + file.Attributes["name"].Value)) File.Delete(tempDir + DS + file.Attributes["name"].Value);
-					File.Copy(extractDir + DS + file.Attributes["name"].Value,tempDir + DS + file.Attributes["name"].Value);
+				if(File.Exists(extractDir + DS + file.Attributes["name"].Value)) File.Delete(extractDir + DS + file.Attributes["name"].Value);
+					File.Copy(extractDir + DS + file.Attributes["name"].Value,extractDir + DS + file.Attributes["name"].Value);
                 long size = checkSize(file.Attributes["name"].Value,Convert.ToInt64(file.Attributes["size"].Value));
                 if(size != -1)
                 {
                     long pos = 0;
                     if(size > 0)
-                    fillPadding(file.Attributes["name"].Value,size);
 					if(!hasChanged(file.Attributes["name"].Value))
 						continue;
+					fillPadding(file.Attributes["name"].Value,size);
                     foreach(XmlNode part in file.ChildNodes)
                     {
                         packPart(part,file.Attributes["name"].Value, pos);
                         pos += Convert.ToInt64(part.Attributes["endpos"].Value) - Convert.ToInt64(part.Attributes["startpos"].Value);
                     }
+					stripPadding(file.Attributes["name"].Value);
                 }
             }
         }
@@ -153,7 +152,7 @@ namespace ffManager
         }
         private long checkSize(string file, long size)
         {
-            FileInfo finfo = new FileInfo(tempDir + DS + file);
+            FileInfo finfo = new FileInfo(extractDir + DS + file);
             if(finfo.Length > size)
             {
                 ArrayList data = new ArrayList();
@@ -183,7 +182,7 @@ namespace ffManager
         }
         private void fillPadding(string file, long num)
         {
-            BinaryWriter fhandle= new BinaryWriter(File.Open(tempDir + DS + file,FileMode.Append,FileAccess.Write));
+            BinaryWriter fhandle= new BinaryWriter(File.Open(extractDir + DS + file,FileMode.Append,FileAccess.Write));
             try
             {
                 for(long i=0; i < num; i++)
@@ -242,6 +241,19 @@ namespace ffManager
 			Console.WriteLine(ps.StartInfo.FileName + " " + ps.StartInfo.Arguments);
 			ps.Start();
 			ps.WaitForExit();
+		}
+		private void stripPadding(string file)
+		{
+			BinaryReader handler = new BinaryReader(File.Open(extractDir + DS + file, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite));
+			BinaryWriter handlew = new BinaryWriter(File.Open(extractDir + DS + file, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite));
+			while(handler.BaseStream.Position < handler.BaseStream.Length)
+			{
+				byte data = handler.ReadByte();
+				if(data != 0x00)
+					handlew.BaseStream.WriteByte(data);
+			}
+			handler.Close();
+			handlew.Close();
 		}
     }
 }

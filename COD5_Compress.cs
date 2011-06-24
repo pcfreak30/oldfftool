@@ -14,7 +14,6 @@ namespace ffManager
         private string extractDir;
         private string dumpDir;
 		private string hashDir;
-		private string tempDir;
         private ArrayList process_files = new ArrayList();
         private string DS = ffManager.MainClass.getOS() == "win32" ? @"\" : "/";
         private XmlDocument offsets;
@@ -30,7 +29,6 @@ namespace ffManager
             extractDir = dir + DS + "scripts";
             dumpDir = dir + DS + "raw";
 			hashDir = dir + DS + "hashes";
-			tempDir = dir + DS + "temp";
             packData();
             ArrayList process_files = new ArrayList();
             Console.WriteLine("Compressing " + fastfile);
@@ -104,14 +102,15 @@ namespace ffManager
                 {
                     long pos = 0;
                     if(size > 0)
-                    fillPadding(file.Attributes["name"].Value,size);
 					if(!hasChanged(file.Attributes["name"].Value))
 						continue;
+					fillPadding(file.Attributes["name"].Value,size);
                     foreach(XmlNode part in file.ChildNodes)
                     {
                         packPart(part,file.Attributes["name"].Value, pos);
                         pos += Convert.ToInt64(part.Attributes["endpos"].Value) - Convert.ToInt64(part.Attributes["startpos"].Value);
                     }
+					stripPadding(file.Attributes["name"].Value);
                 }
             }
         }
@@ -182,7 +181,7 @@ namespace ffManager
         }
         private void fillPadding(string file, long num)
         {
-            BinaryWriter fhandle= new BinaryWriter(File.Open(this.tempDir + DS + file,FileMode.Append,FileAccess.Write));
+            BinaryWriter fhandle= new BinaryWriter(File.Open(this.extractDir + DS + file,FileMode.Append,FileAccess.Write));
             try
             {
                 for(long i=0; i < num; i++)
@@ -196,5 +195,18 @@ namespace ffManager
             }
             fhandle.Close();
         }
+		private void stripPadding(string file)
+		{
+			BinaryReader handler = new BinaryReader(File.Open(extractDir + DS + file, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite));
+			BinaryWriter handlew = new BinaryWriter(File.Open(extractDir + DS + file, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite));
+			while(handler.BaseStream.Position < handler.BaseStream.Length)
+			{
+				byte data = handler.ReadByte();
+				if(data != 0x00)
+					handlew.BaseStream.WriteByte(data);
+			}
+			handler.Close();
+			handlew.Close();
+		}
     }
 }

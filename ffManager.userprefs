@@ -3,13 +3,13 @@
   <MonoDevelop.Ide.Workbench ActiveDocument="AssemblyInfo.cs">
     <Files>
       <File FileName="Main.cs" Line="25" Column="35" />
-      <File FileName="COD4_Compress.cs" Line="104" Column="6" />
-      <File FileName="AssemblyInfo.cs" Line="19" Column="1" />
-      <File FileName="MW2_Decompress.cs" Line="60" Column="1" />
-      <File FileName="COD4_Decompress.cs" Line="60" Column="20" />
-      <File FileName="COD5_Decompress.cs" Line="60" Column="1" />
-      <File FileName="COD5_Compress.cs" Line="61" Column="65" />
-      <File FileName="MW2_Compress.cs" Line="106" Column="16" />
+      <File FileName="COD4_Compress.cs" Line="100" Column="1" />
+      <File FileName="COD4_Decompress.cs" Line="16" Column="3" />
+      <File FileName="AssemblyInfo.cs" Line="20" Column="32" />
+      <File FileName="MW2_Compress.cs" Line="186" Column="66" />
+      <File FileName="MW2_Decompress.cs" Line="34" Column="1" />
+      <File FileName="COD5_Decompress.cs" Line="34" Column="4" />
+      <File FileName="COD5_Compress.cs" Line="33" Column="32" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">

@@ -13,7 +13,6 @@ namespace ffManager
 		private string extractDir;
 		private string dumpDir;
 		private string hashDir;
-		private string tempDir;
 		private string DS = ffManager.MainClass.getOS() == "win32" ? @"\" : "/";
 		private XmlDocument offsets;
 		public MW2_Decompress (string file, string console)
@@ -31,12 +30,10 @@ namespace ffManager
 			extractDir = dir + DS + "scripts";
 			dumpDir = dir + DS + "raw";
 			hashDir = dir + DS + "hashes";
-			tempDir = dir + DS + "temp";
 			Directory.CreateDirectory(dir);
 			Directory.CreateDirectory(extractDir);
 			Directory.CreateDirectory(dumpDir);
 			Directory.CreateDirectory(hashDir);
-			Directory.CreateDirectory(tempDir);
 			Process ps = new Process();
 			ps.StartInfo.CreateNoWindow = true;
 			ps.StartInfo.WindowStyle= ProcessWindowStyle.Hidden;
